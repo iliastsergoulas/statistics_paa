@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Στατιστικά ΠΑΑ 2014-2020 // RDP 2014-2020 statistics</title>
+	<script src="js/d3.v3.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.min.js"></script>
+	<script src="js/tether.min.js" type="text/javascript"></script>
+	<script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
+	<script src="js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="js/d3.tip.v0.6.3.js"></script>
+	<script src="js/tabulator.min.js" type="text/javascript"></script>
+	<script src="js/functions.js"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-131087157-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-131087157-1');
+	</script>
+  <script type="text/javascript">
+	window.onload = function(){ 
+		var enImage = document.getElementById('english');
+		var elImage = document.getElementById('greek');
+		mylanguage=localStorage.getItem("language");
+		if (localStorage.getItem("language")){
+			if (localStorage.language=='en'){
+			  names=englishnames;
+			} else {
+			  names=greeknames;
+			};
+		} else {
+			localStorage.setItem("language", "el-GR");
+			names=greeknames;
+		};
+		refreshnames();
+		enImage.onclick = function() {
+			localStorage.setItem("language", "en");
+			names=englishnames;
+			refreshnames();
+			document.getElementById("dashboard").innerHTML = "";
+			var freqData2=[];
+			d3.json('http://data.agrotikianaptixi.gr/myindex.php/dashboard', function(err, mydata) { 
+				mydata.forEach(function(val) { 
+					var freqData1 = {};
+					freqData1["measure_code"] = val.measure_code; 
+					freqData1["freq"] = { "Competitiveness": Number(val.P2), "Food Chain": Number(val.P3), "Environment": Number(val.P4), 
+					"Natural Resources Management": Number(val.P5), "Local Development": Number(val.P6), 
+					"Technical Assistance":Number(val.T20), "Early Retirement":Number(val.None)}; 
+					freqData2.push(freqData1); 
+				});
+				dashboard('#dashboard',freqData2);
+			});
+		};
+		elImage.onclick = function() {
+			localStorage.setItem("language", "el-GR");
+			names=greeknames;
+			refreshnames();
+			document.getElementById("dashboard").innerHTML = "";
+			var freqData2=[];
+			d3.json('http://data.agrotikianaptixi.gr/myindex.php/dashboard', function(err, mydata) { 
+				mydata.forEach(function(val) { 
+					var freqData1 = {};
+					freqData1["measure_code"] = val.measure_code; 
+					freqData1["freq"] = { "Ανταγωνιστικότητα": Number(val.P2), "Αλυσίδα Τροφίμων": Number(val.P3), "Περιβάλλον": Number(val.P4), 
+					"Εξοικονόμηση φυσικών πόρων": Number(val.P5), "Τοπική ανάπτυξη": Number(val.P6), 
+					"Τεχνική Βοήθεια":Number(val.T20), "Πρόωρη Συνταξιοδότηση":Number(val.None)}; 
+					freqData2.push(freqData1); 
+				});
+				dashboard('#dashboard',freqData2);
+			});
+		};
+	};
+	function refreshnames(){
+		document.getElementById('title1').innerHTML=names[0];
+		document.getElementById('menu1').innerHTML=names[1];
+		document.getElementById('menu2').innerHTML=names[2];
+		document.getElementById('menu3').innerHTML=names[3];
+		document.getElementById('menu4').innerHTML=names[4];
+		document.getElementById('menu5').innerHTML=names[5];
+		document.getElementById('updatetext').innerHTML=names[6];
+		document.getElementById('footer').innerHTML=names[7];
+		document.getElementById('breadcrumb1').innerHTML=names[1];document.getElementById('breadcrumb2').innerHTML=names[5];
+		document.getElementById('title2').innerHTML=names[8];document.getElementById('title3').innerHTML=names[9];
+		document.getElementById("help1").title=names[10];document.getElementById('help1').innerHTML=names[11];
+	};
+	var names;
+	var greeknames=["ΠΑΑ 2014-2020","Το ΠΑΑ σήμερα","Περιφερειακή Ανάλυση","Ανάλυση Πληρωμών","Περιοχές Παρέμβασης","Ανάλυση Μέτρων","Τελευταία ενημέρωση: ",
+	"© Αναπτύχθηκε από ΕΥΔ ΠΑΑ 2014-2020","Ανάλυση Πληρωμών ανά Μέτρο, Υπομέτρο και Έτος (εκατ. Ευρώ)","Πληρωμές Μέτρων ανά Προτεραιότητα",
+	"Με αριστερό κλικ πάνω σε κάθε χρωματισμένη μπάρα έχετε πρόσβαση σε ανάλυση της πληροφορίας ανά Υπομέτρο και έτος. Εάν η μπάρα είναι γκρίζα, σημαίνει ότι δεν υπάρχει μεγαλύτερο επίπεδο ανάλυσης. Μπορείτε να επιστρέψετε σε προηγούμενο επίπεδο ανάλυσης, κάνοντας αριστερό κλικ στον κενό χώρο του διαγράμματος.","Βοήθεια"];
+	var englishnames=["RDP 2014-2020","RDP today","Regional Analysis","Payments Analysis","Intervention Areas","Measures Analysis","Last Update: ",
+	"© Developed by Managing Authority RDP 2014-2020","Payments Analysis per Measure, Submeasure and Year (mil €)","Measure Payments per Priority",
+	"Left-click on each colored bar you can access information analysis per Submeter and Year. If the bar is gray, it means there is no higher level of resolution. You can go back to a previous level of analysis by left-clicking on the empty space on the chart.","Help"];
+  </script>
+  <link type="text/css" rel="stylesheet" href="css/tabulator.min.css">
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="css/sb-admin.css" rel="stylesheet">
+  <link href="css/rdp.css" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <a class="navbar-brand" href="index.html" id="title1">ΠΑΑ 2014-2020 // RDP 2014-2020</a>
+	<div id="greek" class="d-inline-block" style="padding-right:5%;"><img width="85%" height="50%" src="images/gr.png" alt="Ελληνικά"/></div>
+	<div id="english" class="d-inline-block" style="padding-right:5%;"><img width="80%" height="50%" src="images/en.png" alt="English"/></div>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Το ΠΑΑ σήμερα">
+			<a class="nav-link" href="index.html">
+				<i class="fa fa-fw fa-dashboard"></i>
+				<span class="nav-link-text" id="menu1"></span>
+			</a>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιφερειακή Ανάλυση">
+			<a class="nav-link" href="regional.html">
+				<i class="fa fa-fw fa-map"></i>
+				<span class="nav-link-text" id="menu2"></span> 
+			</a>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Πληρωμών">
+			<a class="nav-link" href="payments.html">
+				<i class="fa fa-fw fa-euro"></i>
+				<span class="nav-link-text" id="menu3"></span>
+			</a>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιοχές Παρέμβασης">
+			<a class="nav-link" href="webmap.html">
+				<i class="fa fa-fw fa-map-marker"></i>
+				<span class="nav-link-text" id="menu4"></span>
+			</a>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Μέτρων">
+			<a class="nav-link" href="measures.html">
+				<i class="fa fa-fw fa-area-chart"></i>
+				<span class="nav-link-text" id="menu5"></span>
+			</a>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="CLLD">
+			<a class="nav-link" href="clld.html">
+				<i class="fa fa-fw fa-bar-chart"></i>
+				<span class="nav-link-text">CLLD</span>
+			</a>
+		</li>
+      </ul>
+      <ul class="navbar-nav sidenav-toggler">
+        <li class="nav-item">
+          <a class="nav-link text-center" id="sidenavToggler">
+            <i class="fa fa-fw fa-angle-left"></i>
+          </a>
+        </li>
+      </ul>
+		<ul class="navbar-nav ml-auto">
+			<li><p class="text-white d-inline-block" style="white-space: normal !important;word-wrap: break-word !important;" id="updatetext"></p><span class="text-white d-inline-block" id="update"></span></li>
+		</ul>
+    </div>
+  </nav>
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="index.html" id="breadcrumb1"></a>
+        </li>
+        <li class="breadcrumb-item active" id="breadcrumb2"></li>
+      </ol>
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row no-gutters d-block box mycontainer" style="border: 5px #cbcbcb double">
+			<div class="card-header"><i class="fa fa-area-chart"></i><span id="title2"></span></div>
+			<div class="col-12 d-inline-block" id="ranking">
+				<script type="text/javascript">
+				  var m = [60, 50, 0, 50], // top right bottom left
+				  w = 1100 - m[1] - m[3], // width
+				  h = 450 - m[0] - m[2], // height
+				  x = d3.scale.linear().range([0, w]),
+				  y = 25, // bar height
+				  z = d3.scale.ordinal().range(["#63ac5a", "#aaa"]); // bar color
+				  var hierarchy = d3.layout.partition()
+					  .value(function(d) { return d.size; });
+				  var xAxis = d3.svg.axis()
+					  .scale(x)
+					  .orient("top");
+				  var svg5 = d3.select("#ranking").append("svg:svg")
+					  .attr("width", w + m[1] + m[3])
+					  .attr("height", h + m[0] + m[2])
+					  .call(responsivefy)
+					  .append("svg:g")
+					  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+				  svg5.append("svg:rect")
+					  .attr("class", "background")
+					  .attr("width", w)
+					  .attr("height", h)
+					  .on("click", up);
+				  svg5.append("svg:g")
+					  .attr("class", "x axis");
+				  svg5.append("svg:g")
+					  .attr("class", "y axis")
+					  .append("svg:line")
+					  .attr("y1", "100%");
+				  d3.json('http://data.agrotikianaptixi.gr/myindex.php/measures', function(err, mydata) { 
+					  var year1="2016-"
+					  var year2="2017-"
+					  var year3="2018-"
+					  var measuresdata = d3.nest()
+					  .key(function(d) { return d.measure_code; })
+					  .entries(mydata)
+					  .map(function(measure) {
+						  return {
+							  name: measure.key,
+							  children: measure.values.map(function(submeasure) {
+								  return {
+									  name: submeasure.submeasure_code,
+									  children: [
+									  { name: "2016", size: submeasure.y2016 }, 
+									  { name: "2017", size: submeasure.y2017 },
+									  { name: "2018", size: submeasure.y2018 }
+									  ]
+								  };
+							  })
+						  };
+					  });
+					  var mdata = {name: mydata["name"], children: measuresdata}
+					  hierarchy.nodes(mdata);
+					  x.domain([0, Number(mdata.value)]).nice();
+					  down(mdata, 0);
+				  });
+				  function down(d, i) {
+					  if (!d.children || this.__transition__) return;
+					  var duration = d3.event && d3.event.altKey ? 7500 : 750,
+						  delay = duration / d.children.length;
+					  var exit = svg5.selectAll(".enter").attr("class", "exit");
+					  exit.selectAll("rect").filter(function(p) { return p === d; })
+						  .style("fill-opacity", 1e-6);
+					  var enter = bar(d)
+						  .attr("transform", stack(i))
+						  .style("opacity", 1);
+					  enter.select("text").style("fill-opacity", 1e-6);
+					  enter.select("rect").style("fill", z(true));
+					  x.domain([0, d3.max(d.children, function(d) { return d.value; })]).nice();
+					  svg5.selectAll(".x.axis").transition()
+						  .duration(duration)
+						  .call(xAxis);
+					  var enterTransition = enter.transition()
+						  .duration(duration)
+						  .delay(function(d, i) { return i * delay; })
+						  .attr("transform", function(d, i) { return "translate(0," + y * i * 1.2 + ")"; });
+					  enterTransition.select("text").style("fill-opacity", 1);
+					  enterTransition.select("rect")
+						  .attr("width", function(d) { return x(d.value); })
+						  .style("fill", function(d) { return z(!!d.children); });
+					  var exitTransition = exit.transition()
+						  .duration(duration)
+						  .style("opacity", 1e-6)
+						  .remove();
+					  exitTransition.selectAll("rect").attr("width", function(d) { return x(d.value); });
+					  svg5.select(".background").data([d]).transition().duration(duration * 2); d.index = i;
+				  }
+				  function up(d) {
+					  if (!d.parent || this.__transition__) return;
+					  var duration = d3.event && d3.event.altKey ? 7500 : 750,
+						  delay = duration / d.children.length;
+					  var exit = svg5.selectAll(".enter").attr("class", "exit");
+					  var enter = bar(d.parent)
+						  .attr("transform", function(d, i) { return "translate(0," + y * i * 1.2 + ")"; })
+						  .style("opacity", 1e-6);
+					  enter.select("rect")
+						  .style("fill", function(d) { return z(!!d.children); })
+					  .filter(function(p) { return p === d; })
+						  .style("fill-opacity", 1e-6);
+					  x.domain([0, d3.max(d.parent.children, function(d) { return d.value; })]).nice();
+					  svg5.selectAll(".x.axis").transition()
+						  .duration(duration * 2)
+						  .call(xAxis);
+					  var enterTransition = enter.transition()
+						  .duration(duration * 2)
+						  .style("opacity", 1);
+					  enterTransition.select("rect")
+						  .attr("width", function(d) { return x(d.value); })
+						  .each("end", function(p) { if (p === d) d3.select(this).style("fill-opacity", null); });
+					  var exitTransition = exit.selectAll("g").transition()
+						  .duration(duration)
+						  .delay(function(d, i) { return i * delay; })
+						  .attr("transform", stack(d.index));
+					  exitTransition.select("text")
+						  .style("fill-opacity", 1e-6);
+					  exitTransition.select("rect")
+						  .attr("width", function(d) { return x(d.value); })
+						  .style("fill", z(true));
+					  exit.transition().duration(duration * 2).remove();
+					  svg5.select(".background").data([d.parent]).transition().duration(duration * 2);
+				  }
+				  function bar(d) {
+					  var divTooltip1 = d3.select("#ranking").append("div").attr("class", "toolTip");
+					  var bar = svg5.insert("svg:g", ".y.axis")
+						  .attr("class", "enter")
+						  .attr("transform", "translate(0,5)")
+					  .selectAll("g")
+						  .data(d.children)
+					  .enter().append("svg:g")
+						  .style("cursor", function(d) { return !d.children ? null : "pointer"; })
+						  .on("click", down);
+					  bar.append("svg:text")
+						  .attr("x", -6)
+						  .attr("y", y / 2)
+						  .attr("dy", ".3em")
+						  .attr("text-anchor", "end")
+						  .text(function(d) { return d.name; });
+					  bar.append("svg:rect")
+						  .attr("width", function(d) { return x(d.value); })
+						  .attr("height", y-4);
+					  bar.append("text")
+						.attr("class", "moreText")
+						.attr("x", function(d) { return x(d.value) + 10; })
+						.attr("y", y-4)
+						.attr("dy", ".35em")
+						.attr("fill", "none")
+						.text(function(d) { return Number(d.value.toFixed(2)); });
+					  bar.on("mousemove", function(d){
+						  divTooltip1.style("left", d3.event.pageX+10+"px");
+						  divTooltip1.style("top", d3.event.pageY-25+"px");
+						  divTooltip1.style("display", "inline-block");
+						  var xbars = d3.event.pageX, ybars = d3.event.pageY
+						  var elements = document.querySelectorAll(':hover');
+						  l = elements.length
+						  l = l-1
+						  elementData = elements[l].__data__
+						  divTooltip1.html(Number(d.value.toFixed(2))+" εκατ. €");
+					  });
+					  bar.on("mouseout", function(d){
+						  divTooltip1.style("display", "none");
+					  });
+					  return bar;
+				  }
+				  function stack(i) {
+					  var x0 = 0;
+					  return function(d) {
+						  var tx = "translate(" + x0 + "," + y * i * 1.2 + ")";
+						  x0 += x(d.value);
+						  return tx;
+					  };
+				  }
+			  </script>
+			</div>
+          </div>
+          <div class="box" style="border: 5px #cbcbcb double">
+			<div class="card-header"><i class="fa fa-area-chart"></i><span id="title3"></span></div>
+            <div id='dashboard' class="row no-gutters d-block"></div>
+            <script>/*Dashboard*/
+                function dashboard(id, fData){ /*Creating dashboard for priorities*/
+                    var barColor = 'steelblue';
+					if (localStorage.language=='el-GR'){
+						function segColor(c){ return {"Ανταγωνιστικότητα":"#807dba", "Αλυσίδα Τροφίμων":"#e08214","Περιβάλλον":"#41ab5d", "Εξοικονόμηση φυσικών πόρων":"#00520b", "Τοπική ανάπτυξη":"#f7f322", "Τεχνική Βοήθεια":"#b3b1b6", "Πρόωρη Συνταξιοδότηση":"#26dddd"}[c]; }
+						fData.forEach(function(d){
+							d.total=d.freq["Ανταγωνιστικότητα"]+d.freq["Αλυσίδα Τροφίμων"]+d.freq["Περιβάλλον"]+
+							d.freq["Εξοικονόμηση φυσικών πόρων"]+d.freq["Τοπική ανάπτυξη"]+d.freq["Τεχνική Βοήθεια"]+d.freq["Πρόωρη Συνταξιοδότηση"];
+							d.total=Number(d.total.toFixed(2));
+						});
+					} else {
+						function segColor(c){ return {"Competitiveness":"#807dba", "Food Chain":"#e08214","Environment":"#41ab5d", "Natural Resources Management":"#00520b", "Local Development":"#f7f322", "Technical Assistance":"#b3b1b6", "Early Retirement":"#26dddd"}[c]; }
+						fData.forEach(function(d){
+							d.total=d.freq["Competitiveness"]+d.freq["Food Chain"]+d.freq["Environment"]+
+							d.freq["Natural Resources Management"]+d.freq["Local Development"]+d.freq["Technical Assistance"]+d.freq["Early Retirement"];
+							d.total=Number(d.total.toFixed(2));
+						});
+					};
+                    function histoGram(fD){
+                        var hG={},    hGDim = {t: 20, r: 10, b: 20, l: 10};
+                        hGDim.w = 430 - hGDim.l - hGDim.r, 
+                        hGDim.h = 350 - hGDim.t - hGDim.b;  
+                        var hGsvg = d3.select(id).append("svg")
+                            .attr("width", hGDim.w + hGDim.l + hGDim.r)
+                            .attr("height", hGDim.h + hGDim.t + hGDim.b)
+                            .append("g")
+                            .attr("transform", "translate(" + hGDim.l + "," + hGDim.t + ")");
+                        var x = d3.scale.ordinal().rangeRoundBands([0, hGDim.w], 0.1)
+                        .domain(fD.map(function(d) { return d[0]; }));
+                        hGsvg.append("g").attr("class", "x axis")
+                            .attr("transform", "translate(0," + hGDim.h + ")")
+                            .call(d3.svg.axis().scale(x).orient("bottom"));
+                        var y = d3.scale.linear().range([hGDim.h, 0])
+                                .domain([0, d3.max(fD, function(d) { return d[1]; })]);
+                        var bars = hGsvg.selectAll(".bar").data(fD).enter()
+                                .append("g").attr("class", "bar");
+                        bars.append("rect")
+                            .attr("x", function(d) { return x(d[0]); })
+                            .attr("y", function(d) { return y(d[1]); })
+                            .attr("width", x.rangeBand())
+                            .attr("height", function(d) { return hGDim.h - y(d[1]); })
+                            .attr('fill',barColor)
+                            .on("mouseover",mouseover)// mouseover is defined below.
+                            .on("mouseout",mouseout);// mouseout is defined below.
+                        bars.append("text").text(function(d){ return d3.format(",")(d[1])})
+                            .attr("x", function(d) { return x(d[0])+x.rangeBand()/2; })
+                            .attr("y", function(d) { return y(d[1])-5; })
+                            .style("font-size", "80%") 
+                            .attr("text-anchor", "middle");
+                        function mouseover(d){  // utility function to be called on mouseover.
+                            var st = fData.filter(function(s){ return s.measure_code == d[0];})[0],
+                                nD = d3.keys(st.freq).map(function(s){ return {type:s, freq:st.freq[s]};}); 
+                            pC.update(nD);
+                            leg.update(nD);
+                        }
+                        function mouseout(d){    // utility function to be called on mouseout.  
+                            pC.update(tF);
+                            leg.update(tF);
+                        }
+                        hG.update = function(nD, color){
+                            y.domain([0, d3.max(nD, function(d) { return d[1]; })]);
+                            var bars = hGsvg.selectAll(".bar").data(nD);
+                            bars.select("rect").transition().duration(500)
+                                .attr("y", function(d) {return y(d[1]); })
+                                .attr("height", function(d) { return hGDim.h - y(d[1]); })
+                                .attr("fill", color);
+                            bars.select("text").transition().duration(500)
+                                .text(function(d){ return d3.format(",")(d[1])})
+                                .attr("y", function(d) {return y(d[1])-5; });            
+                        }        
+                        return hG;
+                    }
+                    function pieChart(pD){
+                        var pC ={},    pieDim ={w:230, h: 280};
+                        pieDim.r = Math.min(pieDim.w, pieDim.h) / 2;
+                        var piesvg = d3.select(id).append("svg")
+                            .attr("width", pieDim.w).attr("height", pieDim.h)
+                            .append("g")
+                            .attr("transform", "translate("+pieDim.w/2+","+pieDim.h/2+")");
+                        var arc = d3.svg.arc().outerRadius(pieDim.r - 10).innerRadius(0);
+                        var pie = d3.layout.pie().sort(null).value(function(d) { return d.freq; });
+                        piesvg.selectAll("path").data(pie(pD)).enter().append("path").attr("d", arc)
+                            .each(function(d) { this._current = d; })
+                            .style("fill", function(d) { return segColor(d.data.type); })
+                            .on("mouseover",mouseover).on("mouseout",mouseout);
+                        pC.update = function(nD){
+                            piesvg.selectAll("path").data(pie(nD)).transition().duration(500)
+                                .attrTween("d", arcTween);
+                        }        
+                        function mouseover(d){
+                            hG.update(fData.map(function(v){ 
+                                return [v.measure_code,v.freq[d.data.type]];}),segColor(d.data.type));
+                        }
+                        function mouseout(d){
+                            hG.update(fData.map(function(v){
+                                return [v.measure_code,v.total];}), barColor);
+                        }
+                        function arcTween(a) {
+                            var i = d3.interpolate(this._current, a);
+                            this._current = i(0);
+                            return function(t) { return arc(i(t));    };
+                        }    
+                        return pC;
+                    }
+                    function legend(lD){
+                        var leg = {};
+                        var legend = d3.select(id).append("table").attr('class','legend');
+                        var tr = legend.append("tbody").selectAll("tr").data(lD).enter().append("tr");
+                        tr.append("td").append("svg").attr("width", '20').attr("height", '20').append("rect")
+                            .attr("width", '30').attr("height", '20')
+                            .attr("fill",function(d){ return segColor(d.type); });
+                        tr.append("td").text(function(d){ return d.type;});
+                        tr.append("td").attr("class",'legendFreq')
+                            .text(function(d){ return d3.format(",")(d.freq);});
+                        tr.append("td").attr("class",'legendPerc')
+                            .text(function(d){ return getLegend(d,lD);});
+                        leg.update = function(nD){
+                            var l = legend.select("tbody").selectAll("tr").data(nD);
+                            l.select(".legendFreq").text(function(d){ return d3.format(",")(d.freq);});
+                            l.select(".legendPerc").text(function(d){ return getLegend(d,nD);});        
+                        }
+                        function getLegend(d,aD){ // Utility function to compute percentage.
+                            return d3.format("%")(d.freq/d3.sum(aD.map(function(v){ return v.freq; })));
+                        }
+                        return leg;
+                    }
+					if (localStorage.language=='el-GR'){
+						var tF = ['Ανταγωνιστικότητα','Αλυσίδα Τροφίμων','Περιβάλλον', 'Εξοικονόμηση φυσικών πόρων', 'Τοπική ανάπτυξη', 'Τεχνική Βοήθεια','Πρόωρη Συνταξιοδότηση'].map(function(d){ 
+							return {type:d, freq: Number(d3.sum(fData.map(function(t){ return t.freq[d];})).toFixed(2))}; 
+						});
+					} else {
+						var tF = ['Competitiveness','Food Chain','Environment', 'Natural Resources Management', 'Local Development', 'Technical Assistance','Early Retirement'].map(function(d){ 
+							return {type:d, freq: Number(d3.sum(fData.map(function(t){ return t.freq[d];})).toFixed(2))}; 
+						});
+					};
+                    var sF = fData.map(function(d){return [d.measure_code,d.total];});
+                    var hG = histoGram(sF), // create the histogram.
+                        pC = pieChart(tF), // create the pie-chart.
+                        leg= legend(tF);  // create the legend.
+                };
+				if (localStorage.language=='el-GR'){
+					var freqData2=[];
+					d3.json('http://data.agrotikianaptixi.gr/myindex.php/dashboard', function(err, mydata) { 
+						mydata.forEach(function(val) { 
+							var freqData1 = {};
+							freqData1["measure_code"] = val.measure_code; 
+							freqData1["freq"] = { "Ανταγωνιστικότητα": Number(val.P2), "Αλυσίδα Τροφίμων": Number(val.P3), "Περιβάλλον": Number(val.P4), 
+							"Εξοικονόμηση φυσικών πόρων": Number(val.P5), "Τοπική ανάπτυξη": Number(val.P6), 
+							"Τεχνική Βοήθεια":Number(val.T20), "Πρόωρη Συνταξιοδότηση":Number(val.None)}; 
+							freqData2.push(freqData1); 
+						}); 
+						dashboard('#dashboard',freqData2);
+					});
+				} else{
+					var freqData2=[];
+					d3.json('http://data.agrotikianaptixi.gr/myindex.php/dashboard', function(err, mydata) { 
+						mydata.forEach(function(val) { 
+							var freqData1 = {};
+							freqData1["measure_code"] = val.measure_code; 
+							freqData1["freq"] = { "Competitiveness": Number(val.P2), "Food Chain": Number(val.P3), "Environment": Number(val.P4), 
+							"Natural Resources Management": Number(val.P5), "Local Development": Number(val.P6), 
+							"Technical Assistance":Number(val.T20), "Early Retirement":Number(val.None)}; 
+							freqData2.push(freqData1); 
+						}); 
+						dashboard('#dashboard',freqData2);
+					});
+				};
+            </script>
+          </div>
+        </div>
+    </div>
+    <footer class="sticky-footer">
+		<div class="container">
+			<div class="row no-gutters">
+				<div class="col-md-3 col-lg-3 d-none d-md-block">
+					<div class="row no-gutters">
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/egtaa.jpg" alt="ΕΓΤΑΑ" width="50%" height="5%"></a>
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/paa.jpg" alt="ΠΑΑ" width="30%" height="5%"></a>
+					</div>
+				</div>
+				<div class="col-md-5 col-lg-5 col-12 col-sm-12">
+					<p class="text-center" id="footer"></p>
+				</div>
+				<div class="col-md-3 col-lg-3 d-none d-md-block">
+					<div class="row no-gutters">
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/ypaat.jpg" alt="ΥΠΑΑΤ" width="50%" height="5%"></a>
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/espa.jpg" alt="ΕΣΠΑ" width="50%" height="5%"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fa fa-angle-up"></i>
+    </a>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin.min.js"></script>
+  </div>
+</body>
+</html>

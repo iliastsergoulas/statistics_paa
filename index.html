@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Στατιστικά ΠΑΑ 2014-2020 // RDP 2014-2020 statistics</title>
+	<script src="js/d3.v3.min.js"></script>
+	<script src="js/tether.min.js" type="text/javascript"></script>
+	<script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
+	<script src="js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js" charset="utf-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
+	<script src="js/justgage.js"></script>
+	<script src="js/d3.tip.v0.6.3.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.min.js"></script>
+	<script src="js/functions.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-131087157-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-131087157-1');
+	</script>
+	<script>
+		window.onload = function(){ 
+			var enImage = document.getElementById('english');
+			var elImage = document.getElementById('greek');
+			mylanguage=localStorage.getItem("language");
+			if (localStorage.getItem("language")){
+		        if (localStorage.language=='en'){
+		          names=englishnames;
+		        } else {
+		          names=greeknames;
+		        };
+		    } else {
+		        localStorage.setItem("language", "el-GR");
+		        names=greeknames;
+		    };
+	        refreshnames();
+	        infographic(localStorage.language);
+			enImage.onclick = function() {
+				localStorage.setItem("language", "en");
+				names=englishnames;
+				refreshnames();
+				infographic(localStorage.language);
+				eu(localStorage.language);
+			};
+			elImage.onclick = function() {
+				localStorage.setItem("language", "el-GR");
+				names=greeknames;
+				refreshnames();
+				infographic(localStorage.language);
+				eu(localStorage.language);
+			};
+		};
+		function refreshnames(){
+			document.getElementById('title1').innerHTML=names[0];
+	        document.getElementById('menu1').innerHTML=names[1];
+	        document.getElementById('menu2').innerHTML=names[2];
+	        document.getElementById('menu3').innerHTML=names[3];
+	        document.getElementById('menu4').innerHTML=names[4];
+	        document.getElementById('menu5').innerHTML=names[5];
+	        document.getElementById('updatetext').innerHTML=names[6];
+	        document.getElementById('footer').innerHTML=names[7];
+	        document.getElementById('gauge1').innerHTML=names[8];
+	        document.getElementById('gauge2').innerHTML=names[9];
+	    };
+	    var names;
+	    var greeknames=["ΠΑΑ 2014-2020","Το ΠΑΑ σήμερα","Περιφερειακή Ανάλυση","Ανάλυση Πληρωμών","Περιοχές Παρέμβασης","Ανάλυση Μέτρων","Τελευταία ενημέρωση: ",
+	    "© Αναπτύχθηκε από ΕΥΔ ΠΑΑ 2014-2020","Απορρόφηση Ενωσιακής Συμμετοχής (Με Αποθεματικό Επίδοσης)","Απορρόφηση Ενωσιακής Συμμετοχής (Χωρίς Αποθεματικό Επίδοσης)"];
+	    var englishnames=["RDP 2014-2020","RDP today","Regional Analysis","Payments Analysis","Intervention Areas","Measures Analysis","Last Update: ",
+	    "© Developed by Managing Authority RDP 2014-2020","% Payments/EU Contribution (With Performance Reserve)","% Payments/EU Contribution (Without Performance Reserve)"];
+	</script>
+	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="css/sb-admin.min.css" rel="stylesheet">
+	<link href="css/rdp.css" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+	<!-- Navigation-->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+		<a class="navbar-brand" href="index.html" id="title1"></a>
+		<div id="greek" class="d-inline-block" style="padding-right:5%;"><img width="85%" height="50%" src="images/gr.png" alt="Ελληνικά"/></div>
+		<div id="english" class="d-inline-block" style="padding-right:5%;"><img width="80%" height="50%" src="images/en.png" alt="English"/></div>
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Το ΠΑΑ σήμερα">
+					<a class="nav-link" href="index.html">
+						<i class="fa fa-fw fa-dashboard"></i>
+						<span class="nav-link-text" id="menu1"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιφερειακή Ανάλυση">
+					<a class="nav-link" href="regional.html">
+						<i class="fa fa-fw fa-map"></i>
+						<span class="nav-link-text" id="menu2"></span> 
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Πληρωμών">
+					<a class="nav-link" href="payments.html">
+						<i class="fa fa-fw fa-euro"></i>
+						<span class="nav-link-text" id="menu3"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιοχές Παρέμβασης">
+					<a class="nav-link" href="webmap.html">
+						<i class="fa fa-fw fa-map-marker"></i>
+						<span class="nav-link-text" id="menu4"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Μέτρων">
+					<a class="nav-link" href="measures.html">
+						<i class="fa fa-fw fa-area-chart"></i>
+						<span class="nav-link-text" id="menu5"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="CLLD">
+					<a class="nav-link" href="clld.html">
+						<i class="fa fa-fw fa-bar-chart"></i>
+						<span class="nav-link-text">CLLD</span>
+					</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav sidenav-toggler">
+				<li class="nav-item">
+					<a class="nav-link text-center" id="sidenavToggler">
+						<i class="fa fa-fw fa-angle-left"></i>
+					</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav ml-auto">
+				<li><p class="text-white d-inline-block" style="white-space: normal !important;word-wrap: break-word !important;" id="updatetext"></p><span class="text-white d-inline-block" id="update"></span></li>
+			</ul>
+		</div>
+	</nav>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+			<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 divbelow d-inline-block" style="vertical-align:top;border-right:5px #cbcbcb double;" >
+				<div class="row d-block" style="padding-bottom:10%;">       
+					<div class="col-5 d-inline-block firstword" style="vertical-align:top;"><h2 id="ddbudget" class="text-success text-left lead d-block" style="font-weight:bold;"><span class="badge badge-pill badge-success text-right">5,64</span> δις € Δημόσια Δαπάνη</h2></div>
+					<div class="col-5 d-inline-block firstword" style="vertical-align:top;"><h2 id="eubudget" class="text-success text-left lead d-block" style="font-weight:bold;"><span class="badge badge-pill badge-success text-right">4,78</span>  δις € Συμμετοχή Ε.Ε.</h2></div>
+				</div>
+				<div id="eu" class="row d-block"></div>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 d-inline-block" style="vertical-align:top;">
+				<div class="row no-gutters d-block" style="margin-bottom:4%;">
+					<div class="col-2 d-inline-block align-middle"><img src="images/euro.png" alt="Πληρωμές ΠΑΑ" class="img-fluid"></div>
+					<div class="firstword1 col-9 d-inline-block align-middle pull-right" style="position:absolute:left:0;"><h2 id="pliromes_genh2" class="text-success text-left lead" style="font-weight:bold;text-align:justify;word-wrap:break-word;"><span id="pliromes_gen"></span> δις € ενίσχυση στον αγροτικό τομέα δόθηκαν έως σήμερα από ΠΑΑ</h2></div>
+				</div>
+				<div class="row no-gutters d-block" style="margin-bottom:4%;">
+					<div class="col-2 d-inline-block align-middle"><img src="images/person.png" alt="Γεωργοί και επιχειρήσεις" class="img-fluid"></div>
+					<div class="firstword1 col-9 d-inline-block align-middle pull-right" style="position:absolute:left:0;"><h2 id="dikaiouxoi_genh2" class="text-success text-left lead" style="font-weight:bold;text-align:justify;word-wrap:break-word;"><span id="dikaiouxoi_gen"></span> χιλ γεωργοί κ επιχειρήσεις ωφελήθηκαν από ενισχύσεις του ΠΑΑ</h2></div>
+				</div>
+				<div class="row no-gutters d-block" style="margin-bottom:4%;">
+					<div class="col-2 d-inline-block align-middle"><img src="images/land.gif" alt="Γεωργική γη" class="img-fluid"></div>
+					<div class="firstword1 col-9 d-inline-block align-middle pull-right" style="position:absolute:left:0;"><h2 id="ektaria_genh2" class="text-success text-left lead" style="font-weight:bold;text-align:justify;word-wrap:break-word;"><span id="ektaria_gen"></span> εκατ. στρέμματα γεωργικής & δασικής γης σε περιβ/κές δράσεις</h2></div>
+				</div>
+				<div class="row no-gutters d-block" style="margin-bottom:4%;">
+					<div class="col-2 d-inline-block align-middle"><img src="images/blackboard.png" alt="Επενδύσεις" class="img-fluid"></div>
+					<div class="firstword1 col-9 d-inline-block align-middle pull-right" style="position:absolute:left:0;"><h2 id="katartisih2" class="text-success text-left lead" style="font-weight:bold;text-align:justify;word-wrap:break-word;"><span id="katartisi"></span> χιλ γεωργοί σε πρόγραμμα κατάρτισης</h2></div>
+				</div>
+				<div class="row no-gutters d-block" style="margin-bottom:4%;">
+					<div class="col-2 d-inline-block align-middle"><img src="images/Farmer.png" alt="Νέοι Γεωργοί" class="img-fluid"></div>
+					<div class="firstword1 col-9 d-inline-block align-middle pull-right" style="position:absolute:left:0;"><h2 id="neoi_genh2" class="text-success text-left lead" style="font-weight:bold;text-align:justify;word-wrap:break-word;"><span id="neoi_gen"></span> χιλ Νέοι Γεωργοί</h2></div>
+				</div>
+				<div class="row no-gutters d-block" style="margin-bottom:4%;">
+					<div class="col-2 d-inline-block align-middle"><img src="images/wifi.png" alt="Ευρυζωνικότητα" class="img-fluid"></div>
+					<div class="firstword1 col-9 d-inline-block align-middle pull-right" style="position:absolute:left:0;"><h2 id="evrizh2" class="text-success text-left lead" style="font-weight:bold;text-align:justify;word-wrap:break-word;"><span id="evriz"></span> χιλ κάτοικοι αγροτικών περιοχών αποκτούν ευρυζωνική πρόσβαση</h2></div>
+				</div>
+				<div class="row no-gutters d-block" style="margin-bottom:4%;">
+					<div class="col-2 d-inline-block align-middle"><img src="images/dimosia.png" alt="Δημόσια Έργα" class="img-fluid"></div>
+					<div class="firstword1 col-9 d-inline-block align-middle pull-right" style="position:absolute:left:0;"><h2 id="dimosiah2" class="text-success text-left lead" style="font-weight:bold;text-align:justify;word-wrap:break-word;"><span id="dimosia"></span> εκατ. € σε Δημόσια Έργα</h2></div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+				<div class="row no-gutters d-block" style="margin-bottom:4%;">
+					<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 d-inline-block" style="padding-left:5%;padding-top:0;">
+						<div id="aporrofisi" class="gauge"></div>
+						<div class="align-middle" style="position:absolute:left:0;"><p class="text-success text-center" style="font-weight:bold;text-align:justify;word-wrap:break-word;" id="gauge1"></p></div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 pull-right d-inline-block" style="padding-right:5%;padding-top:0;">
+						<div id="aporrofisi1" class="gauge"></div>
+						<div class="align-middle" style="position:absolute:left:0;"><p class="text-success text-center" style="font-weight:bold;text-align:justify;word-wrap:break-word;" id="gauge2"></p></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			var aporrof1=[];
+			$.getJSON('http://data.agrotikianaptixi.gr/myindex.php/aporrofisi', function(mydata) {
+				aporrof1.push(mydata[0]);
+				pliromes_gen=aporrof1[0]['pliromes'];
+				document.getElementById("pliromes_gen").innerHTML=pliromes_gen;
+			});
+			eu(localStorage.language);
+			function type(d) {
+				d.pct = +d.pct;
+				return d;
+			}
+			document.addEventListener("DOMContentLoaded", function(event) {
+				var dflt = {
+					min: 0,
+					max: 100,
+					donut: true,
+					gaugeWidthScale: 0.8,
+					relativeGaugeSize: true,
+					counter: true,
+					label:'%',
+					decimals : 2,
+					levelColorsGradient: false,
+					customSectors: [
+						{color : "#8aca83",lo : 0,hi : 25},
+						{color : "#63ac5a",lo : 25,hi : 50},
+						{color : "#3f8637",lo : 50,hi : 75},
+						{color : "#175310",lo : 75,hi : 100}
+					],
+					titleMinFontSize:"24px",
+					valueMinFontSize:"14px",
+					labelMinFontSize: "14px",
+					valueFontColor:"#63ac5a",
+					hideInnerShadow: false
+				}
+				var gg1 = new JustGage({
+					id: 'aporrofisi',value: 0,
+					defaults: dflt
+				});
+				var gg2 = new JustGage({
+					id: 'aporrofisi1',value: 0,
+					defaults: dflt
+				});
+				$.getJSON('http://data.agrotikianaptixi.gr/myindex.php/aporrofisi', function(mydata) {
+					mydata.forEach(function(val) { 
+						aporrof = Number(val.aporrofisi1*100).toFixed(4);
+						gg1.refresh(aporrof);
+						aporrof1 = Number(val.aporrofisi*100).toFixed(4);
+						gg2.refresh(aporrof1);
+					}); 
+				});            
+			});
+		</script>
+		<footer class="sticky-footer">
+			<div class="container">
+				<div class="row no-gutters">
+					<div class="col-md-3 col-lg-3 d-none d-md-block">
+						<div class="row no-gutters">
+							<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/egtaa.jpg" alt="ΕΓΤΑΑ" width="50%" height="5%"></a>
+							<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/paa.jpg" alt="ΠΑΑ" width="30%" height="5%"></a>
+						</div>
+					</div>
+					<div class="col-md-5 col-lg-5 col-12 col-sm-12">
+						<p class="text-center" id="footer"></p>
+					</div>
+					<div class="col-md-3 col-lg-3 d-none d-md-block">
+						<div class="row no-gutters">
+							<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/ypaat.jpg" alt="ΥΠΑΑΤ" width="50%" height="5%"></a>
+							<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/espa.jpg" alt="ΕΣΠΑ" width="50%" height="5%"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<a class="scroll-to-top rounded" href="#page-top">
+		<i class="fa fa-angle-up"></i>
+		</a>
+		<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+		<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+		<script src="js/sb-admin.min.js"></script>
+	</div>
+</body>
+
+</html>
+

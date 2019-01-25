@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Στατιστικά ΠΑΑ 2014-2020 // RDP 2014-2020 statistics</title>
+	<script src="js/d3.v3.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.min.js"></script>
+	<script src="js/tether.min.js" type="text/javascript"></script>
+	<script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
+	<script src="js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="js/d3.tip.v0.6.3.js"></script>
+	<script src="js/tabulator.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>
+	<script src="js/functions.js"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-131087157-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-131087157-1');
+	</script>
+	<script>
+		window.onload = function(){ 
+			var enImage = document.getElementById('english');
+			var elImage = document.getElementById('greek');
+			mylanguage=localStorage.getItem("language");
+			if (localStorage.getItem("language")){
+		        if (localStorage.language=='en'){
+		          names=englishnames;
+		        } else {
+		          names=greeknames;
+		        };
+		    } else {
+		        localStorage.setItem("language", "el-GR");
+		        names=greeknames;
+		    };
+	        refreshnames();
+	        myclld(localStorage.language);
+			enImage.onclick = function() {
+				localStorage.setItem("language", "en");
+				names=englishnames;
+				refreshnames();
+				myclld(localStorage.language);
+			};
+			elImage.onclick = function() {
+				localStorage.setItem("language", "el-GR");
+				names=greeknames;
+				refreshnames();
+				myclld(localStorage.language);
+			};
+		};
+		function refreshnames(){
+			document.getElementById('title1').innerHTML=names[0];
+	        document.getElementById('menu1').innerHTML=names[1];
+	        document.getElementById('menu2').innerHTML=names[2];
+	        document.getElementById('menu3').innerHTML=names[3];
+	        document.getElementById('menu4').innerHTML=names[4];
+	        document.getElementById('menu5').innerHTML=names[5];
+	        document.getElementById('updatetext').innerHTML=names[6];
+	        document.getElementById('footer').innerHTML=names[7];
+			document.getElementById('breadcrumb1').innerHTML=names[1];
+			document.getElementById('clld1').innerHTML=names[8];
+			document.getElementById('download-csv3').innerHTML=names[9];
+	        document.getElementById('clld2').innerHTML=names[10];
+	        document.getElementById('clld3').innerHTML=names[11];
+	        document.getElementById('clld4').innerHTML=names[12];
+	        document.getElementById('clld5').innerHTML=names[12];
+	        document.getElementById('clld6').innerHTML=names[12];
+	    };
+	    var names;
+	    var greeknames=["ΠΑΑ 2014-2020","Το ΠΑΑ σήμερα","Περιφερειακή Ανάλυση","Ανάλυση Πληρωμών","Περιοχές Παρέμβασης","Ανάλυση Μέτρων","Τελευταία ενημέρωση: ","© Αναπτύχθηκε από ΕΥΔ ΠΑΑ 2014-2020","* Η Αναπτυξιακή Ηρακλείου και η Αναπτυξιακή Θεσσαλονίκης διαχειρίζονται πόρους για δύο (2) Τοπικά Προγράμματα","Λήψη δεδομένων","Ο Πίνακας αποτυπώνει την πορεία κάθε Ομάδας Τοπικής Δράσης ως προς την ενεργοποίηση των Τοπικών Προγραμμάτων που διαχειρίζονται και την απορρόφηση των διαχειριζόμενων πόρων.","Η παρακολούθηση γίνεται σύμφωνα με την κατανομή πόρων που έγινε με την υπ' αρ. 3893/20-12-2017 απόφαση."," Ταξινόμηση"];
+	    var englishnames=["RDP 2014-2020","RDP today","Regional Analysis","Payments Analysis","Intervention Areas","Measures Analysis","Last Update: ",
+	    "© Developed by Managing Authority RDP 2014-2020","Development Agencies of Heraklion and Thessaloniki manage funds for two Local Programmes.","Download Data","The Table displays each LAG's course regarding activation of the respective Local Programmes under their management and their payments.",
+	    "Monitoring is based on the funds allocation according to 3893/20-12-2017 decision."," Sort"];
+	</script>
+	<link type="text/css" rel="stylesheet" href="css/tabulator.min.css">
+	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="css/sb-admin.css" rel="stylesheet">
+	<link href="css/rdp.css" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <a class="navbar-brand" href="index.html" id="title1"></a>
+	<div id="greek" class="d-inline-block" style="padding-right:5%;"><img width="85%" height="50%" src="images/gr.png" alt="Ελληνικά"/></div>
+	<div id="english" class="d-inline-block" style="padding-right:5%;"><img width="80%" height="50%" src="images/en.png" alt="English"/></div>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Το ΠΑΑ σήμερα">
+			<a class="nav-link" href="index.html">
+				<i class="fa fa-fw fa-dashboard"></i>
+				<span class="nav-link-text" id="menu1"></span>
+			</a>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιφερειακή Ανάλυση">
+			<a class="nav-link" href="regional.html">
+				<i class="fa fa-fw fa-map"></i>
+				<span class="nav-link-text" id="menu2"></span> 
+			</a>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Πληρωμών">
+			<a class="nav-link" href="payments.html">
+				<i class="fa fa-fw fa-euro"></i>
+				<span class="nav-link-text" id="menu3"></span>
+			</a>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιοχές Παρέμβασης">
+			<a class="nav-link" href="webmap.html">
+				<i class="fa fa-fw fa-map-marker"></i>
+				<span class="nav-link-text" id="menu4"></span>
+			</a>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Μέτρων">
+			<a class="nav-link" href="measures.html">
+				<i class="fa fa-fw fa-area-chart"></i>
+				<span class="nav-link-text" id="menu5"></span>
+			</a>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="CLLD">
+			<a class="nav-link" href="clld.html">
+				<i class="fa fa-fw fa-bar-chart"></i>
+				<span class="nav-link-text">CLLD</span>
+			</a>
+		</li>
+      </ul>
+      <ul class="navbar-nav sidenav-toggler">
+        <li class="nav-item">
+          <a class="nav-link text-center" id="sidenavToggler">
+            <i class="fa fa-fw fa-angle-left"></i>
+          </a>
+        </li>
+      </ul>
+		<ul class="navbar-nav ml-auto">
+			<li><p class="text-white d-inline-block" style="white-space: normal !important;word-wrap: break-word !important;" id="updatetext"></p><span class="text-white d-inline-block" id="update"></span></li>
+		</ul>
+    </div>
+  </nav>
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="index.html" id="breadcrumb1"></a>
+        </li>
+        <li class="breadcrumb-item active" >CLLD</li>
+      </ol>
+      <div class="card mb-3">
+        <div class="card-body mycontainer">
+			<div style="display:inline-block;vertical-align:top;margin-top:22px;" class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 divbelow">
+				<div id="mytable3" style="display:block;"></div>
+				<p id="clld1" class="mytext"></p>
+				<button id="download-csv3" class="btn btn-success mytext" style="display:block;"></button>
+				<p id="clld2" class="mytext" style="display:inline-block;"><p>
+				<p id="clld3" class="mytext" style="display:inline-block;"><p>
+				<script>
+					var tableData3=[];
+					$.getJSON('http://data.agrotikianaptixi.gr/myindex.php/otdbullets', function(mydata) {
+						mydata.forEach(function(val) { 
+							var cllddata = {}; 
+							cllddata["otdnick"] = val.otdnick; 
+							cllddata["pctproskl"] = ((val.pctproskl*100).toFixed(2)).toLocaleString(); 
+							cllddata["pctent"] = ((val.pctent*100).toFixed(2)).toLocaleString();
+							cllddata["pctplir"] = ((val.pctplir*100).toFixed(2)).toLocaleString(); 
+							tableData3.push(cllddata); 
+						}); 
+						$("#mytable3").tabulator({
+							data:tableData3,layout:"fitColumns",pagination:"local",paginationSize:25,tooltipsHeader: true,
+							columns:[
+								{
+									title:"Απορρόφηση Τοπικών Προγραμμάτων CLLD",
+									columns:[
+										{title:"Αναπτυξιακή Εταιρεία", field:"otdnick", sorter:"string", widthGrow:2},
+										{title:"% Προσκλήσεις", field:"pctproskl"},
+										{title:"% Εντάξεις", field:"pctent"},
+										{title:"% Πληρωμές", field:"pctplir"}
+									],
+								}
+							],
+						});
+					});
+					$("#download-csv3").click(function(){
+						$("#mytable3").tabulator("download", "xlsx", "data.xlsx", {sheetName:"MyData"});
+					});
+            </script>
+        </div>
+        <div style="display:inline-block;margin-top:20px;"  class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
+			<div style="float:right;">
+				<input id="input1" type="checkbox" checked="false">
+				<label id="clld4" class="mytext"></label>
+			</div>
+            <div id="clldproskliseis" style="display:block;">
+            </div>
+            <div style="float:right;">
+				<input id="input2" type="checkbox" checked="false">
+				<label id="clld5" class="mytext"></label>
+			</div>
+            <div id="clldentaxeis" style="display:block;">
+            </div>
+			<div style="float:right;">
+				<input id="input3" type="checkbox" checked="false">
+				<label id="clld6" class="mytext"></label>
+			</div>
+            <div id="clldpliromes" style="display:block;">
+            </div>
+			<script>
+				myclld(localStorage.language);
+			</script>
+        </div>
+      </div>
+    </div>
+    <footer class="sticky-footer">
+		<div class="container">
+			<div class="row no-gutters">
+				<div class="col-md-3 col-lg-3 d-none d-md-block">
+					<div class="row no-gutters">
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/egtaa.jpg" alt="ΕΓΤΑΑ" width="50%" height="5%"></a>
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/paa.jpg" alt="ΠΑΑ" width="30%" height="5%"></a>
+					</div>
+				</div>
+				<div class="col-md-5 col-lg-5 col-12 col-sm-12">
+					<p class="text-center" id="footer"></p>
+				</div>
+				<div class="col-md-3 col-lg-3 d-none d-md-block">
+					<div class="row no-gutters">
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/ypaat.jpg" alt="ΥΠΑΑΤ" width="50%" height="5%"></a>
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/espa.jpg" alt="ΕΣΠΑ" width="50%" height="5%"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fa fa-angle-up"></i>
+    </a>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin.min.js"></script>
+  </div>
+</body>
+
+</html>

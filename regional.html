@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Στατιστικά ΠΑΑ 2014-2020 // RDP 2014-2020 statistics</title>
+	<script src="js/d3.v3.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.min.js"></script>
+	<script src="js/tether.min.js" type="text/javascript"></script>
+	<script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
+	<script src="js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js" charset="utf-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
+	<script src="js/jquery.mapael.min.js" charset="utf-8"></script>
+	<script src="js/maps/world_countries.js" charset="utf-8"></script>
+	<script src="js/maps/world_countries_en.js" charset="utf-8"></script>
+	<script src="js/tabulator.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>
+	<script src="js/functions.js"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-131087157-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-131087157-1');
+	</script>
+	<script>
+		window.onload = function(){ 
+			var enImage = document.getElementById('english');
+			var elImage = document.getElementById('greek');
+			mylanguage=localStorage.getItem("language");
+			if (localStorage.getItem("language")){
+		        if (localStorage.language=='en'){
+		          names=englishnames;
+		        } else {
+		          names=greeknames;
+		        };
+		    } else {
+		        localStorage.setItem("language", "el-GR");
+		        names=greeknames;
+		    };
+	        refreshnames();
+			enImage.onclick = function() {
+				localStorage.setItem("language", "en");
+				names=englishnames;
+				refreshnames();
+				mymap(localStorage.language)
+			};
+			elImage.onclick = function() {
+				localStorage.setItem("language", "el-GR");
+				names=greeknames;
+				refreshnames();
+				mymap(localStorage.language)
+			};
+		};
+		function refreshnames(){
+			document.getElementById('title1').innerHTML=names[0];document.getElementById('menu1').innerHTML=names[1];
+			document.getElementById('menu2').innerHTML=names[2];document.getElementById('menu3').innerHTML=names[3];
+			document.getElementById('menu4').innerHTML=names[4];document.getElementById('menu5').innerHTML=names[5];
+	        document.getElementById('updatetext').innerHTML=names[6];document.getElementById('footer').innerHTML=names[7];
+			document.getElementById('breadcrumb1').innerHTML=names[1];document.getElementById('breadcrumb2').innerHTML=names[2];
+			document.getElementById('selection1').innerHTML=names[8];document.getElementById('selection2').innerHTML=names[9];
+			document.getElementById('selection3').innerHTML=names[10];document.getElementById('selection4').innerHTML=names[11];
+			document.getElementById('selection5').innerHTML=names[12];document.getElementById('selection6').innerHTML=names[13];
+			document.getElementById('selection7').innerHTML=names[14];document.getElementById('selection8').innerHTML=names[15];
+			document.getElementById('selection9').innerHTML=names[16];document.getElementById('selection10').innerHTML=names[17];
+			document.getElementById('selection11').innerHTML=names[18];document.getElementById('selection12').innerHTML=names[19];
+			document.getElementById('selection13').innerHTML=names[20];document.getElementById('selection14').innerHTML=names[21];
+			document.getElementById('selection15').innerHTML=names[22];document.getElementById('selection16').innerHTML=names[23];
+			document.getElementById('selection17').innerHTML=names[24];document.getElementById('selection18').innerHTML=names[25];
+			document.getElementById('selection19').innerHTML=names[26];document.getElementById('selection20').innerHTML=names[27];
+			document.getElementById('selection21').innerHTML=names[28];document.getElementById('selection22').innerHTML=names[29];
+			document.getElementById('selection23').innerHTML=names[30];document.getElementById('selection24').innerHTML=names[31];
+	    };
+	    var names;
+	    var greeknames=["ΠΑΑ 2014-2020","Το ΠΑΑ σήμερα","Περιφερειακή Ανάλυση","Ανάλυση Πληρωμών","Περιοχές Παρέμβασης","Ανάλυση Μέτρων","Τελευταία ενημέρωση: ",
+	    "© Αναπτύχθηκε από ΕΥΔ ΠΑΑ 2014-2020","Επιλέξτε","Εντάξεις εκχωρημένων Δράσεων (% εκχώρησης)","Εντάξεις εκχωρημένων Δράσεων (εκατ. Ευρώ)",
+		"Πληρωμές εκχωρημένων Δράσεων (% εκχώρησης)","Πληρωμές εκχωρημένων Δράσεων (εκατ. Ευρώ)","Εντάξεις ΠΑΑ Περιφέρειας (% χώρας)","Εντάξεις ΠΑΑ Περιφέρειας (εκατ. Ευρώ)",
+		"Πληρωμές ΠΑΑ Περιφέρειας (% χώρας)","Πληρωμές ΠΑΑ Περιφέρειας (εκατ. Ευρώ)"," Ο χάρτης επικαιροποιείται ως προς την επιλογή σας παραπάνω.","Εκχωρημένες Δράσεις",
+		"Εκχωρήθηκαν στις Περιφέρειες πόροι ύψους 1.271,92 εκατ. € για τις παρακάτω παρεμβάσεις:",
+		"- Υπομέτρο 4.1: Επενδύσεις που βελτιώνουν συνολικές επιδόσεις ενεργητικού (Σχέδια Βελτίωσης), στο 100% των νέων δαπανών (εξαιρούνται οι ανειλημμένες υποχρεώσεις του ΠΑΑ 2007-2013)",
+		"- Υπομέτρο 4.2: Επενδύσεις, που αφορούν τη μεταποίηση, εμπορία και/ή ανάπτυξη των γεωργικών προϊόντων, για πράξεις συνολικού προϋπολογισμού έως 600.000 €",
+		"- Δράση 4.3.1: Εγγειοβελτιωτικά έργα, για πράξεις συνολικού προϋπολογισμού έως 2,2 εκ. €",
+		"- Δράσεις 4.3.3 & 4.3.4: Αγροτική & Δασική οδοποιία, στο 100% των νέων δαπανών του έργου (εξαιρούνται οι ανειλημμένες υποχρεώσεις του ΠΑΑ 2007-2013)",
+		"- Υπομέτρο 6.1: Ενισχύσεις εκκίνησης επιχείρησης για νέους γεωργούς, στο 100% των νέων δαπανών (εξαιρούνται οι ανειλημμένες υποχρεώσεις του ΠΑΑ 2007-2013)",
+		"- Υπομέτρο 6.2: Ενισχύσεις εκκίνησης επιχείρησης για μη γεωργικές δραστηριότητες σε αγροτικές περιοχές, στο 100% του προϋπολογισμού του υπομέτρου",
+		"- Υπομέτρο 6.3: Ενισχύσεις για την ανάπτυξη μικρών εκμεταλλεύσεων, στο 100% του προϋπολογισμού του υπομέτρου",
+		"- Υπομέτρο 16.1-16.2: Ίδρυση και λειτουργία επιχειρησιακών ομάδων της Ευρωπαϊκής Σύμπραξης Καινοτομίας, στο 40% του προϋπολογισμού του υπομέτρου",
+		"- Υπομέτρο 16.4: Ενίσχυση οριζόντιας και κάθετης συνεργασίας μεταξύ φορέων της αλυσίδας εφοδιασμού, στο 100% του προϋπολογισμού του υπομέτρου",
+		"- Μέτρο 19: Ομάδες τοπικής δράσης LEADER, στο 100% του προϋπολογισμού του Μέτρου","Πορεία ΠΑΑ 2014-2020 στις Περιφέρειες (εκατ. €)","Λήψη δεδομένων"];
+	    var englishnames=["RDP 2014-2020","RDP today","Regional Analysis","Payments Analysis","Intervention Areas","Measures Analysis","Last Update: ",
+	    "© Developed by Managing Authority RDP 2014-2020","Select","Approvals - Actions delegated to Regions (% delegation)","Approvals in delegated actions(mil €)","Payments -Actions delegated to Regions (% delegation)",
+		"Payments in delegated actions (mil €)","Approvals - RDP in Regions (% country)","Approvals - RDP in Regions (mil €)","Payments - RDP in Regions (% country)",
+		"Payments - RDP in Regions (mil €)","The map is updated based on your selection above.","Allocated Actions",
+		"€ 1,271.92 million were allocated to the regions for the following interventions:",
+		"- Submeasure 4.1: Investments that improve overall asset performance (Improvement Plans) to 100% of new expenditure (excluding RDP 2007-2013 commitments)",
+		"- Sub-measure 4.2: Investments relating to the processing, marketing and / or development of agricultural products, for operations with a total budget of up to € 600.000",
+		"- Action 4.3.1: Land reclamation projects for operations with a total budget of up to € 2.2 million","Actions 4.3.3 & 4.3.4: Rural & Forestry, at 100% of the project's new costs (excluding RDP 2007-2013 commitments)",
+		"- Sub-measure 6.1: Start-up aid for young farmers, at 100% of the new expenditure (excluding RDP 2007-2013 commitments)",
+		"- Submeasure 6.2: Start-up aid for non-agricultural activities in rural areas at 100% of sub-measure budget",
+		"- Sub-measure 6.3: Aid for the development of small farms at 100% of the sub-measure's budget",
+		"- Submeasure 16.1-16.2: Establishment and operation of European Innovation Partnership business groups at 40% of the sub-measure budget",
+		"- Sub-measure 16.4: Strengthening horizontal and vertical cooperation between actors in the supply chain, at 100% of the sub-measure budget",
+		"- Measure 19: LEADER Local Action Groups, at 100% of the Measure's budget","RDP course in Regions (mil €)","Download data"];
+	</script>
+	<link type="text/css" rel="stylesheet" href="css/tabulator.min.css">
+	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="css/sb-admin.css" rel="stylesheet">
+	<link href="css/rdp.css" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+		<a class="navbar-brand" href="index.html" id="title1"></a>
+		<div id="greek" class="d-inline-block" style="padding-right:5%;"><img width="85%" height="50%" src="images/gr.png" alt="Ελληνικά"/></div>
+		<div id="english" class="d-inline-block" style="padding-right:5%;"><img width="80%" height="50%" src="images/en.png" alt="English"/></div>
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Το ΠΑΑ σήμερα">
+					<a class="nav-link" href="index.html">
+						<i class="fa fa-fw fa-dashboard"></i>
+						<span class="nav-link-text" id="menu1"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιφερειακή Ανάλυση">
+					<a class="nav-link" href="regional.html">
+						<i class="fa fa-fw fa-map"></i>
+						<span class="nav-link-text" id="menu2"></span> 
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Πληρωμών">
+					<a class="nav-link" href="payments.html">
+						<i class="fa fa-fw fa-euro"></i>
+						<span class="nav-link-text" id="menu3">/span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιοχές Παρέμβασης">
+					<a class="nav-link" href="webmap.html">
+						<i class="fa fa-fw fa-map-marker"></i>
+						<span class="nav-link-text" id="menu4"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Μέτρων">
+					<a class="nav-link" href="measures.html">
+						<i class="fa fa-fw fa-area-chart"></i>
+						<span class="nav-link-text" id="menu5"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="CLLD">
+					<a class="nav-link" href="clld.html">
+						<i class="fa fa-fw fa-bar-chart"></i>
+						<span class="nav-link-text">CLLD</span>
+					</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav sidenav-toggler">
+				<li class="nav-item">
+				<a class="nav-link text-center" id="sidenavToggler">
+					<i class="fa fa-fw fa-angle-left"></i>
+				</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav ml-auto">
+				<li><p class="text-white d-inline-block" style="white-space: normal !important;word-wrap: break-word !important;" id="updatetext"></p><span class="text-white d-inline-block" id="update"></span></li>
+			</ul>
+		</div>
+	</nav>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+			<a href="index.html" id="breadcrumb1"></a>
+			</li>
+			<li class="breadcrumb-item active" id="breadcrumb2"></li>
+		</ol>
+		<div class="card mb-3">
+			<div class="world card-body">
+			<div id="mapaelmap" class="map col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 d-inline-block pull-left" style="border:5px #cbcbcb double;vertical-align:top;"></div> 
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 divbelow d-inline-block pull-left">         
+				<div id="mapaellegend" class="areaLegend d-block row no-gutters" style="width:90%;"></div>
+				<div class="d-block row no-gutters" style="height:30%;vertical-align:top;">
+					<h6 style="height:10px;display:inline-block;" id="selection1"></h6>
+					<div style="display:block;">
+						<div class="select">
+							<select id="mapselection" class="mytext" style="width:95%;">
+								<optgroup label="Εκχωρημένες Δράσεις σε Περιφέρειες">
+									<option id="selection2"></option>   
+									<option id="selection3"></option>                             
+									<option id="selection4"></option>
+									<option id="selection5"></option>
+								</optgroup>
+								<optgroup label="Σύνολο ΠΑΑ 2014-2020">
+									<option id="selection6"></option>
+									<option id="selection7"></option>
+									<option id="selection8"></option>
+									<option id="selection9"></option>
+								</optgroup>
+								<!--<optgroup label="4.2 - Μεταποίηση γεωργικών προϊόντων">
+									<option id="selection1">Αριθμός αιτήσεων // Number of applications</option>
+									<option id="selection1">Συνολικός Προϋπολογισμός (εκατ. €) // Total Budget (mil €)</option>
+								</optgroup>
+								<optgroup label="5.1 - Επενδύσεις Πρόληψης">
+									<option id="selection1">Αριθμός αιτήσεων // Number of applications</option>
+									<option id="selection1">Συνολικός Προϋπολογισμός (εκατ. €) // Total Budget (mil €)</option>
+								</optgroup>
+								<optgroup label="9 - Σύσταση Ομάδων Παραγωγών">
+									<option id="selection1">Αριθμός αιτήσεων // Number of applications</option>
+									<option id="selection1">Συνολικός Προϋπολογισμός (εκατ. €) // Total Budget (mil €)</option>
+								</optgroup>
+								<optgroup label="4.1 - Σχέδια Βελτίωσης">
+									<option id="selection1">Αριθμός αιτήσεων // Number of applications</option>
+									<option id="selection1">Συνολικός Προϋπολογισμός (εκατ. €) // Total Budget (mil €)</option>
+								</optgroup>-->
+							</select>
+							<div class="select__arrow"></div>
+						</div>
+					</div>
+				</div>
+				<p class="mytext" id="selection10"></p>
+				<p><button class="btn mytext" id="selection11" style="width:100%" type="button" data-toggle="collapse" data-target="#ekxwriseis" aria-expanded="false" aria-controls="collapseExample" ></button></p>
+				<div class="collapse" id="ekxwriseis" style="height:250px;max-height:250px;resize: none;overflow-y: scroll;">
+					<p class="mytext" id="selection12" style="text-align:justify;word-wrap:break-word;"></p>
+					<p class="mytext" id="selection13" style="text-align:justify;word-wrap:break-word;"></p>
+					<p class="mytext" id="selection14" style="text-align:justify;word-wrap:break-word;"></p>
+					<p class="mytext" id="selection15" style="text-align:justify;word-wrap:break-word;"></p>
+					<p class="mytext" id="selection16" style="text-align:justify;word-wrap:break-word;"></p>
+					<p class="mytext" id="selection17" style="text-align:justify;word-wrap:break-word;"></p>
+					<p class="mytext" id="selection18" style="text-align:justify;word-wrap:break-word;"></p>
+					<p class="mytext" id="selection19" style="text-align:justify;word-wrap:break-word;"></p>
+					<p class="mytext" id="selection20" style="text-align:justify;word-wrap:break-word;"></p>
+					<p class="mytext" id="selection21" style="text-align:justify;word-wrap:break-word;"></p>
+					<p class="mytext" id="selection22" style="text-align:justify;word-wrap:break-word;"></p>
+				</div>
+			</div>
+			<div class="col-12" style="display:inline-block;margin-top:2%;">
+				<h6 id="selection23" style="height:20px;display:block;"></h6>
+				<div id="mytable1" style="display:block;"></div>
+				<button id="selection24" class="btn btn-success mytext" id="download-csv1"></button>
+			</div>
+			<script>
+				var tableData1=[];
+				$.getJSON('http://data.agrotikianaptixi.gr/myindex.php/regions', function(mydata) {
+					mydata.forEach(function(val) { 
+						var regdata = {}; 
+						regdata["region"] = val.region; 
+						regdata["entfull"] = (Number(val.entfull).toFixed(2)).toLocaleString(); 
+						regdata["plirfull"] = (Number(val.plirfull).toFixed(2)).toLocaleString(); 
+						regdata["entfullpct"] = (Number(val.entfullpct)*100).toFixed(2).toLocaleString(); 
+						regdata["plirfullpct"] = (Number(val.plirfullpct)*100).toFixed(2).toLocaleString();
+						regdata["ekxwr"] = (Number(val.funds).toFixed(2)).toLocaleString();
+						regdata["entekx"] = (Number(val.entekx).toFixed(2)).toLocaleString(); 
+						regdata["pctentekx"] = ((Number(val.entekxpct)*100).toFixed(2)).toLocaleString(); 
+						regdata["plirekx"] = (Number(val.plirekx).toFixed(2)).toLocaleString(); 
+						regdata["pctplirekx"] = ((Number(val.plirekxpct)*100).toFixed(2)).toLocaleString();
+						tableData1.push(regdata); 
+					}); 
+					$("#mytable1").tabulator({
+						data:tableData1,layout:"fitColumns",tooltipsHeader: true,
+						columns:[
+							{title:"Περιφέρεια", field:"region", sorter:"string"},
+							{
+								title:"Σύνολο Μέτρων ΠΑΑ 2014-2020 (εκατ. Ευρώ)",
+								columns:[
+									{title:"Εντάξεις", field:"entfull"},
+									{title:"Πληρωμές", field:"plirfull"},
+									{title:"% Εντάξεις/Σύνολο Χώρας", field:"entfullpct"},
+									{title:"% Πληρωμές/Σύνολο Χώρας", field:"plirfullpct"},
+								],	
+							},	
+							{
+								title:"Εκχωρημένοι πόροι σε Περιφέρειες για Μέτρα ΠΑΑ 2014-2020 (εκατ. Ευρώ)",
+								columns:[
+									{title:"Εκχωρήσεις", field:"ekxwr"},
+									{title:"Εντάξεις", field:"entekx"},
+									{title:"% Εντάξεις/Εκχωρήσεις", field:"pctentekx"},
+									{title:"Πληρωμές", field:"plirekx"},
+									{title:"% Πληρωμές/Εκχωρήσεις", field:"pctplirekx"}
+								],
+							},
+						],
+					});
+				});
+				mymap(localStorage.language);
+				$("#download-csv1").click(function(){
+					$("#mytable1").tabulator("download", "xlsx", "data.xlsx", {sheetName:"MyData"});
+				});
+			</script>
+			<div style="clear: both;"></div>
+		</div>
+      </div>
+    </div>
+    <footer class="sticky-footer">
+		<div class="container">
+			<div class="row no-gutters">
+				<div class="col-md-3 col-lg-3 d-none d-md-block">
+					<div class="row no-gutters">
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/egtaa.jpg" alt="ΕΓΤΑΑ" width="50%" height="5%"></a>
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/paa.jpg" alt="ΠΑΑ" width="30%" height="5%"></a>
+					</div>
+				</div>
+				<div class="col-md-5 col-lg-5 col-12 col-sm-12">
+					<p class="text-center" id="footer"></p>
+				</div>
+				<div class="col-md-3 col-lg-3 d-none d-md-block">
+					<div class="row no-gutters">
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/ypaat.jpg" alt="ΥΠΑΑΤ" width="50%" height="5%"></a>
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/espa.jpg" alt="ΕΣΠΑ" width="50%" height="5%"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fa fa-angle-up"></i>
+    </a>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin.min.js"></script>
+  </div>
+</body>
+
+</html>

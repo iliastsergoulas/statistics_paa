@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title data-translatable>Στατιστικά ΠΑΑ 2014-2020 // RDP 2014-2020 statistics</title>
+	<script src="js/d3.v3.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.min.js"></script>
+	<script src="js/tether.min.js" type="text/javascript"></script>
+	<script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
+	<script src="js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js" charset="utf-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
+	<script src="js/jquery.mapael.min.js" charset="utf-8"></script>
+	<script src="js/tabulator.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>
+	<script src="js/functions.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-131087157-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-131087157-1');
+	</script>
+	<script>
+		window.onload = function(){ 
+			var enImage = document.getElementById('english');
+			var elImage = document.getElementById('greek');
+			mylanguage=localStorage.getItem("language");
+			if (localStorage.getItem("language")){
+				var i18n = domI18n({
+					selector: '[data-translatable]',separator: ' // ',
+					languages: ['el-GR', 'en'],currentLanguage: localStorage.language
+				});
+			} else{
+				localStorage.setItem("language", "el-GR");
+				var i18n = domI18n({
+					selector: '[data-translatable]',separator: ' // ',
+					languages: ['el-GR', 'en'],currentLanguage: localStorage.language
+				});
+			};
+			enImage.onclick = function() {
+				i18n.changeLanguage('en');
+				localStorage.setItem("language", "en");
+				mymap(localStorage.language);
+			};
+			elImage.onclick = function() {
+				i18n.changeLanguage('el-GR');
+				localStorage.setItem("language", "el-GR");
+				mymap(localStorage.language);
+			};
+		};
+	</script>
+	<link type="text/css" rel="stylesheet" href="css/tabulator.min.css">
+	<!-- Bootstrap core CSS-->
+	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Custom fonts for this template-->
+	<link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<!-- Custom styles for this template-->
+	<link href="css/sb-admin.css" rel="stylesheet">
+	<link href="css/rdp.css" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+	<!-- Navigation-->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+		<a class="navbar-brand" href="index.html" data-translatable>ΠΑΑ 2014-2020 // RDP 2014-2020</a>
+		<div id="greek" class="d-inline-block" style="padding-right:5%;"><img width="85%" height="50%" src="images/gr.png" alt="Ελληνικά"/></div>
+		<div id="english" class="d-inline-block" style="padding-right:5%;"><img width="80%" height="50%" src="images/en.png" alt="English"/></div>
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Το ΠΑΑ σήμερα">
+					<a class="nav-link" href="index.html">
+						<i class="fa fa-fw fa-dashboard"></i>
+						<span class="nav-link-text" data-translatable>Το ΠΑΑ σήμερα // RDP today</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιφερειακή Ανάλυση">
+					<a class="nav-link" href="regional.html">
+						<i class="fa fa-fw fa-map"></i>
+						<span class="nav-link-text" data-translatable>Περιφερειακή Ανάλυση // Regional Analysis</span> 
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Πληρωμών">
+					<a class="nav-link" href="payments.html">
+						<i class="fa fa-fw fa-euro"></i>
+						<span class="nav-link-text" data-translatable>Ανάλυση Πληρωμών // Payments Analysis</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιοχές Παρέμβασης">
+					<a class="nav-link" href="webmap.html">
+						<i class="fa fa-fw fa-map-marker"></i>
+						<span class="nav-link-text" data-translatable>Περιοχές Παρέμβασης // Intervention Areas</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Μέτρων">
+					<a class="nav-link" href="measures.html">
+						<i class="fa fa-fw fa-area-chart"></i>
+						<span class="nav-link-text" data-translatable>Ανάλυση Μέτρων // Measures Analysis</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="CLLD">
+					<a class="nav-link" href="clld.html">
+						<i class="fa fa-fw fa-bar-chart"></i>
+						<span class="nav-link-text" data-translatable>CLLD</span>
+					</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav sidenav-toggler">
+				<li class="nav-item">
+				<a class="nav-link text-center" id="sidenavToggler">
+					<i class="fa fa-fw fa-angle-left"></i>
+				</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav ml-auto">
+				<li>
+					<p class="text-white d-inline-block" style="white-space: normal !important;word-wrap: break-word !important;" data-translatable>Τελευταία ενημέρωση: // Last Update:</p>
+					<p class="text-white d-inline-block" style="white-space: normal !important;word-wrap: break-word !important;" id="update"></p>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+		<!-- Breadcrumbs-->
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+			<a href="index.html" data-translatable>Το ΠΑΑ 2014-2020 σήμερα // RDP 2014-2020 today</a>
+			</li>
+			<li class="breadcrumb-item active" data-translatable>Νέοι Γεωργοί // Young Farmers</li>
+		</ol>
+		<!-- Area Chart Example-->
+		
+		<div class="row no-gutter">
+			<div class="col-5 d-inline-block"><img width="80%" height="100%" style="opacity:0.75" src="images/farmer_info.png" alt="Ελληνικά"/></div>
+			<div class="col-7 d-inline-block">
+				<p class="text-center" style="font-size:200%;" data-translatable>Προφίλ Νέου Γεωργού // Young Farmer profile</p>
+				<div class="row no-gutter">
+					<div class="card-containerbox col-6">
+						<div class="cardbox" style="background: #c7e9c0;">
+							<div class="front text-center"><div class="card-headbox" style="height:30%;"><p data-translatable style="font-size:120%;">Ηλικία // Age</p></div><div class="align-text-center"><p style="font-size:200%" data-translatable>28</p></div></div>
+							<div class="back text-center">
+								<div class="card-headbox d-block" style="height:30%;"><p data-translatable style="font-size:120%;">Ηλικία // Age</p></div>
+								<div class="align-text-center">
+									<p data-translatable style="font-size:90%">18-25:   40,56%</p>
+									<p data-translatable style="font-size:90%">26-35:   41,55%</p>
+									<p data-translatable style="font-size:90%">>35:   17,88%</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card-containerbox col-6">
+						<div class="cardbox" style="background: #c7e9c0;">
+							<div class="front text-center"><div class="card-headbox" style="height:30%;"><p data-translatable style="font-size:120%;">Φύλο // Sex</p></div><div class="align-text-center"><p style="font-size:200%" data-translatable>Άνδρας // Man</p></div></div>
+							<div class="back text-center">								
+								<div class="card-headbox d-block" style="height:30%;"><p data-translatable style="font-size:120%;">Φύλο // Sex</p></div>
+								<div class="align-text-center">
+									<p data-translatable style="font-size:90%">Άνδρας:   68,18% // Man:   68,18%</p>
+									<p data-translatable style="font-size:90%">Γυναίκα:   31,82% // Woman:   31,82%</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row no-gutter">
+					<div class="card-containerbox col-6">
+						<div class="cardbox" style="background: #c7e9c0;">
+							<div class="front text-center"><div class="card-headbox" style="height:30%;"><p data-translatable style="font-size:120%;">Εκπαίδευση // Education</p></div><div class="align-text-center"><p style="font-size:200%" data-translatable>ΕΠΑΣ - ΕΠΑΛ // Man</p></div></div>
+							<div class="back text-center">
+								<div class="card-headbox d-block" style="height:30%;"><p data-translatable style="font-size:120%;">Εκπαίδευση // Education</p></div>
+								<div class="align-text-center">
+									<p style="font-size:80%;margin-bottom:0;" data-translatable>Δημοτικό:   4,72% // Primary:   4,72%</p>
+									<p style="font-size:80%;margin-bottom:0;" data-translatable>Γυμνάσιο:   13,28% // High School:   13,28%</p>
+									<p style="font-size:80%;margin-bottom:0;" data-translatable>Επαγγ. Ειδικότητα:   5,60% // Vocational Specialty:   5,60%</p>
+									<p style="font-size:80%;margin-bottom:0" data-translatable>ΕΠΑΣ - ΕΠΑΛ:   62,23% // Vocational Upper Secondary:   62,23%</p>
+									<p style="font-size:80%;margin-bottom:0" data-translatable>Διπλ. Επαγγ. Ειδικότητας:   2,100% // Vocational Training Diploma :   2,100%</p>
+									<p style="font-size:80%;margin-bottom:0" data-translatable>Ανώτατη:   11,05% // Bachelor:   11,05%</p>
+									<p style="font-size:80%;margin-bottom:0" data-translatable>Μεταπτυχιακό:   0,41% // Master:   0,41%</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card-containerbox col-6">
+						<div class="cardbox" style="background: #c7e9c0;">
+							<div class="front text-center"><div class="card-headbox" style="height:30%;"><p data-translatable style="font-size:120%;">Παραγωγή // Production</p></div><div class="align-text-center"><p style="font-size:200%" data-translatable>Φυτική // Man</p></div></div>
+							<div class="back text-center">								
+							<div class="card-headbox d-block" style="height:30%;"><p data-translatable style="font-size:120%;">Παραγωγή // Production</p></div>
+								<div class="align-text-center">
+									<p data-translatable style="font-size:90%">Φυτική:   75,72% // Plant:   75,72%</p>
+									<p data-translatable style="font-size:90%">Ζωική:   19,68% // Animal:   19,68%</p>
+									<p data-translatable style="font-size:90%">Μικτή:   4,60% // Mixed:   4,60%</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="card-containerbox col-6">
+						<div class="cardbox" style="background: #c7e9c0;">
+							<div class="front text-center"><div class="card-headbox" style="height:30%;"><p data-translatable style="font-size:120%;">Ατομικό εισόδημα // Single income</p></div><div class="align-text-center"><p style="font-size:200%" data-translatable>4,6 χιλ €</p></div></div>
+							<div class="back text-center">		
+							<div class="card-headbox d-block" style="height:30%;"><p data-translatable style="font-size:120%;">Ατομικό εισόδημα // Single income</p></div>							
+								<div class="align-text-center">
+									<p style="font-size:80%;" data-translatable>0 €:   42,39%</p>
+									<p style="font-size:80%;" data-translatable>0,01-5.000 €:   31,58%</p>
+									<p style="font-size:80%;" data-translatable>5.000-10.000 €:   10,28%</p>
+									<p style="font-size:80%;" data-translatable>>10.000 €:   15,76%</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card-containerbox col-6">
+						<div class="cardbox" style="background: #c7e9c0;">
+							<div class="front text-center"><div class="card-headbox" style="height:30%;"><p data-translatable style="font-size:120%;">Οικογενειακό εισόδημα // Family income</p></div><div class="align-text-center"><p style="font-size:200%" data-translatable>10,8 χιλ €</p></div></div>
+							<div class="back text-center">							
+							<div class="card-headbox d-block" style="height:30%;"><p data-translatable style="font-size:120%;">Οικογενειακό εισόδημα // Family income</p></div>							
+								<div class="align-text-center">
+									<p style="font-size:80%;" data-translatable>0 €:   40,46%</p>
+									<p style="font-size:80%;" data-translatable>0,01-10.000 €:   32,83%</p>
+									<p style="font-size:80%;" data-translatable>10.000-20.000 €:   9,62%</p>
+									<p style="font-size:80%;" data-translatable>>20.000 €:   17,09%</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+    <!-- /.container-fluid-->
+    <!-- /.content-wrapper-->
+    <footer class="sticky-footer">
+      <div class="container">
+        <div class="text-center">
+          <p class="text-center" data-translatable> © Αναπτύχθηκε από ΕΥΔ ΠΑΑ 2014-2020 // © Developed by Managing Authority RDP 2014-2020</p>
+        </div>
+      </div>
+    </footer>
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fa fa-angle-up"></i>
+    </a>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin.min.js"></script>
+  </div>
+</body>
+
+</html>
