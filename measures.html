@@ -46,7 +46,7 @@
 			d3.json('http://data.agrotikianaptixi.gr/myindex.php/dashboard', function(err, mydata) { 
 				mydata.forEach(function(val) { 
 					var freqData1 = {};
-					freqData1["measure_code"] = val.measure_code; 
+					freqData1["measure"] = val.measure; 
 					freqData1["freq"] = { "Competitiveness": Number(val.P2), "Food Chain": Number(val.P3), "Environment": Number(val.P4), 
 					"Natural Resources Management": Number(val.P5), "Local Development": Number(val.P6), 
 					"Technical Assistance":Number(val.T20), "Early Retirement":Number(val.None)}; 
@@ -64,7 +64,7 @@
 			d3.json('http://data.agrotikianaptixi.gr/myindex.php/dashboard', function(err, mydata) { 
 				mydata.forEach(function(val) { 
 					var freqData1 = {};
-					freqData1["measure_code"] = val.measure_code; 
+					freqData1["measure"] = val.measure; 
 					freqData1["freq"] = { "Ανταγωνιστικότητα": Number(val.P2), "Αλυσίδα Τροφίμων": Number(val.P3), "Περιβάλλον": Number(val.P4), 
 					"Εξοικονόμηση φυσικών πόρων": Number(val.P5), "Τοπική ανάπτυξη": Number(val.P6), 
 					"Τεχνική Βοήθεια":Number(val.T20), "Πρόωρη Συνταξιοδότηση":Number(val.None)}; 
@@ -85,7 +85,6 @@
 		document.getElementById('footer').innerHTML=names[7];
 		document.getElementById('breadcrumb1').innerHTML=names[1];document.getElementById('breadcrumb2').innerHTML=names[5];
 		document.getElementById('title2').innerHTML=names[8];document.getElementById('title3').innerHTML=names[9];
-		document.getElementById("help1").title=names[10];document.getElementById('help1').innerHTML=names[11];
 	};
 	var names;
 	var greeknames=["ΠΑΑ 2014-2020","Το ΠΑΑ σήμερα","Περιφερειακή Ανάλυση","Ανάλυση Πληρωμών","Περιοχές Παρέμβασης","Ανάλυση Μέτρων","Τελευταία ενημέρωση: ",
@@ -103,15 +102,15 @@
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" style="background: rgb(35,59,47);
+background: linear-gradient(90deg, rgba(35,59,47,1) 30%, rgba(31,64,47,1) 60%);">
     <a class="navbar-brand" href="index.html" id="title1">ΠΑΑ 2014-2020 // RDP 2014-2020</a>
-	<div id="greek" class="d-inline-block" style="padding-right:5%;"><img width="85%" height="50%" src="images/gr.png" alt="Ελληνικά"/></div>
-	<div id="english" class="d-inline-block" style="padding-right:5%;"><img width="80%" height="50%" src="images/en.png" alt="English"/></div>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion" style="background: rgb(35,59,47);
+background: linear-gradient(90deg, rgba(35,59,47,1) 30%, rgba(31,64,47,1) 60%);">
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Το ΠΑΑ σήμερα">
 			<a class="nav-link" href="index.html">
 				<i class="fa fa-fw fa-dashboard"></i>
@@ -147,6 +146,15 @@
 				<i class="fa fa-fw fa-bar-chart"></i>
 				<span class="nav-link-text">CLLD</span>
 			</a>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="greek">
+			<div id="greek" class="d-inline-block" style="padding:5%;"><img width="75%" height="50%" src="images/gr.png" alt="Ελληνικά"/></div>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="english">
+			<div id="english" class="d-inline-block" style="padding:5%;"><img width="75%" height="50%" src="images/en.png" alt="English"/></div>
+		</li>
+		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="gif">
+			<div id="gif" class="d-inline-block" style="padding:5%;"><img width="100%" height="100%" src="images/mygif.gif" alt="English"/></div>
 		</li>
       </ul>
       <ul class="navbar-nav sidenav-toggler">
@@ -208,25 +216,27 @@
 					  var year1="2016-"
 					  var year2="2017-"
 					  var year3="2018-"
+					  var year4="2019-"
 					  var measuresdata = d3.nest()
-					  .key(function(d) { return d.measure_code; })
+					  .key(function(d) { return d.measure; })
 					  .entries(mydata)
 					  .map(function(measure) {
 						  return {
 							  name: measure.key,
 							  children: measure.values.map(function(submeasure) {
 								  return {
-									  name: submeasure.submeasure_code,
+									  name: submeasure.submeasure,
 									  children: [
 									  { name: "2016", size: submeasure.y2016 }, 
 									  { name: "2017", size: submeasure.y2017 },
-									  { name: "2018", size: submeasure.y2018 }
+									  { name: "2018", size: submeasure.y2018 },
+									  { name: "2019", size: submeasure.y2019 }
 									  ]
 								  };
 							  })
 						  };
 					  });
-					  var mdata = {name: mydata["name"], children: measuresdata}
+					  var mdata = {name: mydata["name"], children: measuresdata};
 					  hierarchy.nodes(mdata);
 					  x.domain([0, Number(mdata.value)]).nice();
 					  down(mdata, 0);
@@ -402,7 +412,7 @@
                             .style("font-size", "80%") 
                             .attr("text-anchor", "middle");
                         function mouseover(d){  // utility function to be called on mouseover.
-                            var st = fData.filter(function(s){ return s.measure_code == d[0];})[0],
+                            var st = fData.filter(function(s){ return s.measure == d[0];})[0],
                                 nD = d3.keys(st.freq).map(function(s){ return {type:s, freq:st.freq[s]};}); 
                             pC.update(nD);
                             leg.update(nD);
@@ -443,11 +453,11 @@
                         }        
                         function mouseover(d){
                             hG.update(fData.map(function(v){ 
-                                return [v.measure_code,v.freq[d.data.type]];}),segColor(d.data.type));
+                                return [v.measure,v.freq[d.data.type]];}),segColor(d.data.type));
                         }
                         function mouseout(d){
                             hG.update(fData.map(function(v){
-                                return [v.measure_code,v.total];}), barColor);
+                                return [v.measure,v.total];}), barColor);
                         }
                         function arcTween(a) {
                             var i = d3.interpolate(this._current, a);
@@ -487,7 +497,7 @@
 							return {type:d, freq: Number(d3.sum(fData.map(function(t){ return t.freq[d];})).toFixed(2))}; 
 						});
 					};
-                    var sF = fData.map(function(d){return [d.measure_code,d.total];});
+                    var sF = fData.map(function(d){return [d.measure,d.total];});
                     var hG = histoGram(sF), // create the histogram.
                         pC = pieChart(tF), // create the pie-chart.
                         leg= legend(tF);  // create the legend.
@@ -495,10 +505,12 @@
 				if (localStorage.language=='el-GR'){
 					var freqData2=[];
 					d3.json('http://data.agrotikianaptixi.gr/myindex.php/dashboard', function(err, mydata) { 
+						console.log(mydata);
 						mydata.forEach(function(val) { 
 							var freqData1 = {};
-							freqData1["measure_code"] = val.measure_code; 
-							freqData1["freq"] = { "Ανταγωνιστικότητα": Number(val.P2), "Αλυσίδα Τροφίμων": Number(val.P3), "Περιβάλλον": Number(val.P4), 
+							freqData1["measure"] = val.measure; 
+							freqData1["freq"] = { "Ανταγωνιστικότητα": Number(val.P2), 
+							"Αλυσίδα Τροφίμων": Number(val.P3), "Περιβάλλον": Number(val.P4), 
 							"Εξοικονόμηση φυσικών πόρων": Number(val.P5), "Τοπική ανάπτυξη": Number(val.P6), 
 							"Τεχνική Βοήθεια":Number(val.T20), "Πρόωρη Συνταξιοδότηση":Number(val.None)}; 
 							freqData2.push(freqData1); 
@@ -510,7 +522,7 @@
 					d3.json('http://data.agrotikianaptixi.gr/myindex.php/dashboard', function(err, mydata) { 
 						mydata.forEach(function(val) { 
 							var freqData1 = {};
-							freqData1["measure_code"] = val.measure_code; 
+							freqData1["measure"] = val.measure; 
 							freqData1["freq"] = { "Competitiveness": Number(val.P2), "Food Chain": Number(val.P3), "Environment": Number(val.P4), 
 							"Natural Resources Management": Number(val.P5), "Local Development": Number(val.P6), 
 							"Technical Assistance":Number(val.T20), "Early Retirement":Number(val.None)}; 

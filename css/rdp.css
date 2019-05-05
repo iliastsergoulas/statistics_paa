@@ -8,7 +8,7 @@
             transform: rotateY( 180deg );
 }
 
-.cardbox {
+.cardbox,.cardboxindex {
     -webkit-transition: -webkit-transform 0.7s;
             transition: transform 0.7s;
     -webkit-transform-style: preserve-3d;
@@ -49,6 +49,11 @@
 
 .cardbox {
 	height: 12em;
+	margin: 1em;
+}
+
+.cardboxindex {
+	height: 2em;
 	margin: 1em;
 }
 
