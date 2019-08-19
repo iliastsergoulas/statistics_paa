@@ -503,7 +503,7 @@ function myclld(t) {
             g = d3.select("#clldentaxeis").append("svg").attr("width", c + _.left + _.right).attr("height", d + _.top + _.bottom).call(responsivefy).append("g").attr("transform", "translate(" + _.left + "," + _.top + ")");
         d3.json("http://data.agrotikianaptixi.gr/myindex.php/otdbullets", function(t, e) {
             e.forEach(function(t) {
-                t.pctent = 0
+                t.pctent = +t.pctent
             }), p.domain(e.map(function(t) {
                 return t.otdsymbol
             })), u.domain([0, d3.max(e, function(t) {
