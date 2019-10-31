@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title data-translatable>Στατιστικά ΠΑΑ 2014-2020 // RDP 2014-2020 statistics</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.min.js"></script>
+	<script src="js/tether.min.js" type="text/javascript"></script>
+	<script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
+	<script src="js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js" charset="utf-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
+	<script src="js/jquery.mapael.min.js" charset="utf-8"></script>
+	<script src="js/tabulator.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>
+	<script src="js/functions.js"></script>
+	<script src="https://d3js.org/d3.v4.js"></script>
+	<script src="js/d3-tip.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-131087157-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-131087157-1');
+	</script>
+	<script>
+		var names;
+	    var greeknames=["ΠΑΑ 2014-2020","Το ΠΑΑ σήμερα","Περιφερειακή Ανάλυση","Ανάλυση Πληρωμών","Περιοχές Παρέμβασης","Ανάλυση Μέτρων","Τελευταία ενημέρωση: ",
+	    "© Αναπτύχθηκε από ΕΥΔ ΠΑΑ 2014-2020","Ηλικία","Φύλο","Εκπαίδευση","Παραγωγή","Ατομ. Εισόδημα","Οικογ. Εισόδημα",
+	    "Προφίλ Νέου Γεωργού"];
+	    var englishnames=["RDP 2014-2020","RDP today","Regional Analysis","Payments Analysis","Intervention Areas","Measures Analysis","Last Update: ",
+	    "© Developed by Managing Authority RDP 2014-2020","Age","Sex","Education","Production","Single Income","Family Income",
+	    "Young Farmer profile"];
+		window.onload = function(){ 
+			var enImage = document.getElementById('english');
+			var elImage = document.getElementById('greek');
+			mylanguage=localStorage.getItem("language");
+			if (localStorage.getItem("language")){
+		        if (localStorage.language=='en'){
+		          names=englishnames;
+		        } else {
+		          names=greeknames;
+		        };
+		    } else {
+		        localStorage.setItem("language", "el-GR");
+		        names=greeknames;
+		    };
+	        refreshnames();
+	        youngchart(localStorage.language,'data1');
+			enImage.onclick = function() {
+				localStorage.setItem("language", "en");
+				names=englishnames;
+				refreshnames();
+				youngchart(localStorage.language,'data1');
+			};
+			elImage.onclick = function() {
+				localStorage.setItem("language", "el-GR");
+				names=greeknames;
+				refreshnames();
+				youngchart(localStorage.language,'data1');
+			};
+		};
+		function refreshnames(){
+			document.getElementById('title1').innerHTML=names[0];
+	        document.getElementById('menu1').innerHTML=names[1];
+	        document.getElementById('menu2').innerHTML=names[2];
+	        document.getElementById('menu3').innerHTML=names[3];
+	        document.getElementById('menu4').innerHTML=names[4];
+	        document.getElementById('menu5').innerHTML=names[5];
+	        document.getElementById('updatetext').innerHTML=names[6];
+	        document.getElementById('footer').innerHTML=names[7];
+	        document.getElementById('btnage').innerHTML=names[8];
+	        document.getElementById('btnsex').innerHTML=names[9];
+			document.getElementById('btneducation').innerHTML=names[10];
+	        document.getElementById('btnproduction').innerHTML=names[11];
+	        document.getElementById('btnsingle').innerHTML=names[12];
+	        document.getElementById('btnfamily').innerHTML=names[13];
+	        document.getElementById('sectiontitle').innerHTML=names[14];
+	        document.getElementById('breadcrumb1').innerHTML=names[1];
+	    };
+	</script>
+	<link type="text/css" rel="stylesheet" href="css/tabulator.min.css">
+	<!-- Bootstrap core CSS-->
+	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Custom fonts for this template-->
+	<link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<!-- Custom styles for this template-->
+	<link href="css/sb-admin.css" rel="stylesheet">
+	<link href="css/rdp.css" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+	<!-- Navigation-->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" style="background: rgb(35,59,47);
+background: linear-gradient(90deg, rgba(35,59,47,1) 30%, rgba(31,64,47,1) 60%);">
+		<a class="navbar-brand" href="index.html" id="title1"></a>
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion" style="background: rgb(35,59,47);
+background: linear-gradient(90deg, rgba(35,59,47,1) 30%, rgba(31,64,47,1) 60%);">
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Το ΠΑΑ σήμερα">
+					<a class="nav-link" href="index.html">
+						<i class="fa fa-fw fa-dashboard"></i>
+						<span class="nav-link-text" id="menu1"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιφερειακή Ανάλυση">
+					<a class="nav-link" href="regional.html">
+						<i class="fa fa-fw fa-map"></i>
+						<span class="nav-link-text" id="menu2"></span> 
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Πληρωμών">
+					<a class="nav-link" href="payments.html">
+						<i class="fa fa-fw fa-euro"></i>
+						<span class="nav-link-text" id="menu3"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιοχές Παρέμβασης">
+					<a class="nav-link" href="webmap.html">
+						<i class="fa fa-fw fa-map-marker"></i>
+						<span class="nav-link-text" id="menu4"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Μέτρων">
+					<a class="nav-link" href="measures.html">
+						<i class="fa fa-fw fa-area-chart"></i>
+						<span class="nav-link-text" id="menu5"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="CLLD">
+					<a class="nav-link" href="clld.html">
+						<i class="fa fa-fw fa-bar-chart"></i>
+						<span class="nav-link-text">CLLD</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="greek">
+					<div id="greek" class="d-inline-block" style="padding:5%;"><img width="75%" height="50%" src="images/gr.png" alt="Ελληνικά"/></div>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="english">
+					<div id="english" class="d-inline-block" style="padding:5%;"><img width="75%" height="50%" src="images/en.png" alt="English"/></div>
+				</li>
+			</ul>
+			<ul class="navbar-nav sidenav-toggler">
+				<li class="nav-item">
+					<a class="nav-link text-center" id="sidenavToggler">
+						<i class="fa fa-fw fa-angle-left"></i>
+					</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav ml-auto">
+				<li><p class="text-white d-inline-block" style="white-space: normal !important;word-wrap: break-word !important;" id="updatetext"></p><span class="text-white d-inline-block" id="update"></span></li>
+			</ul>
+		</div>
+	</nav>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+		<ol class="breadcrumb">
+	        <li class="breadcrumb-item">
+	          	<a href="index.html" id="breadcrumb1"></a>
+	        </li>
+	        <li class="breadcrumb-item active" >Νέοι Γεωργοί</li>
+	    </ol>
+		<div class="row no-gutter">
+			<div class="col-lg-4 col-md-4 col-sm-4 d-inline-block"><img width="80%" height="100%" style="opacity:0.75" src="images/farmer_info.png" alt="Ελληνικά"/></div>
+			<div class="col-8 d-inline-block">
+				<p id="sectiontitle" class="text-center" style="font-size:200%;" data-translatable></p>
+				<div class="row" style="width:100%">
+					<button id="btnage" class="col-2 btn btn-info text-center" onclick="youngchart(localStorage.language,'data1')"></button>
+					<button id="btnsex" class="col-1 btn btn-info text-center" onclick="youngchart(localStorage.language,'data2')"></button>
+					<button id="btneducation" class="col-2 btn btn-info text-center" onclick="youngchart(localStorage.language,'data3')"></button>
+					<button id="btnproduction" class="col-2 btn btn-info text-center" onclick="youngchart(localStorage.language,'data4')"></button>
+					<button id="btnsingle" class="col-2 btn btn-info text-center" onclick="youngchart(localStorage.language,'data5')"></button>
+					<button id="btnfamily" class="col-3 btn btn-info text-center" onclick="youngchart(localStorage.language,'data6')"></button>
+				</div>
+				<div id="young"></div>
+			</div>
+			<script>
+				function wrap(text, width) {
+				  	text.each(function() {
+				    var text = d3.select(this),
+				        words = text.text().split(/\s+/).reverse(),
+				        word,
+				        line = [],
+				        lineNumber = 0,
+				        lineHeight = 1.1, // ems
+				        y = text.attr("y"),
+				        dy = parseFloat(text.attr("dy")),
+				        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em")
+				    while (word = words.pop()) {
+				      line.push(word)
+				      tspan.text(line.join(" "))
+				      if (tspan.node().getComputedTextLength() > width) {
+				        line.pop()
+				        tspan.text(line.join(" "))
+				        line = [word]
+				        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", `${++lineNumber * lineHeight + dy}em`).text(word)
+				      }
+				    }
+				  })
+				};
+				function youngchart(language,mydata){
+					d3.select("#young").selectAll("svg").remove();
+					console.log(mydata);
+					console.log(typeof(mydata));
+					var data1 = [
+					   {group: "18-25", value: 40.56},
+					   {group: "26-35", value: 41.55},
+					   {group: ">35", value: 17.88}
+					];
+					if (language=='el-GR'){
+						var data2 = [
+						   {group: "Άνδρας", value: 68.18},
+						   {group: "Γυναίκα", value: 31.82}
+						];
+						var data3 = [
+						   {group: "Δημοτικό", value: 4.72},
+						   {group: "Γυμνάσιο", value: 13.28},
+						   {group: "Επαγγ. ειδικότητα", value: 5.6},
+						   {group: "ΕΠΑΣ-ΕΠΑΛ", value: 62.23},
+						   {group: "Διπλ. επαγγ. ειδικότητας", value: 2.1},
+						   {group: "Ανώτατη", value: 11.05},
+						   {group: "Μεταπτυχιακό", value: 0.41}
+						];
+						var data4 = [
+						   {group: "Φυτική", value: 75.72},
+						   {group: "Ζωική", value: 19.68},
+						   {group: "Μικτή", value: 4.6}
+						];
+						var charttitles = ["Ηλικία","Φύλο","Εκπαίδευση","Παραγωγή","Ατομ. Εισόδημα","Οικογ. Εισόδημα"];
+					} else {
+						var data2 = [
+						   {group: "Man", value: 68.18},
+						   {group: "Woman", value: 31.82}
+						];
+						var data3 = [
+						   {group: "Primary", value: 4.72},
+						   {group: "High School", value: 13.28},
+						   {group: "Vocational Specialty", value: 5.6},
+						   {group: "Vocational Upper Secondary", value: 62.23},
+						   {group: "Vocational Training Diploma", value: 2.1},
+						   {group: "Bachelor", value: 11.05},
+						   {group: "Master", value: 0.41}
+						];
+						var data4 = [
+						   {group: "Plant", value: 75.72},
+						   {group: "Animal", value: 19.68},
+						   {group: "Mixed", value: 4.6}
+						];
+						var charttitles = ["Age","Sex","Education","Production","Single Income","Family Income"];
+					}
+					var data5 = [
+					   {group: "0 €", value: 42.39},
+					   {group: "0,01-5.000 €", value: 31.58},
+					   {group: "5.000-10.000 €", value: 10.28},
+					   {group: ">10.000 €", value: 15.76}
+					];
+					var data6 = [
+					   {group: "0 €", value: 40.46},
+					   {group: "0,01-10.000 €", value: 32.83},
+					   {group: "10.000-20.000 €", value: 9.62},
+					   {group: ">20.000 €", value: 17.09}
+					];
+					charttitle=charttitles[0];
+					switch(mydata) {
+					  	case "data1":
+					  		data=data1;
+					  		charttitle=charttitles[0];					    	
+					  		break;
+					  	case "data2":
+					  		data=data2;
+					  		charttitle=charttitles[1];
+					    	break;
+					    case "data3":
+					    	data=data3;
+					    	charttitle=charttitles[2];
+					    	break;
+					  	case "data4":
+					  		data=data4;
+					  		charttitle=charttitles[3];
+					    	break;
+					    case "data5":
+					    	data=data5;
+					    	charttitle=charttitles[4];
+					    	break;
+					  	case "data6":
+					  		data=data6;
+					  		charttitle=charttitles[5];
+					    	break;
+					  	default:
+					};
+					// set the dimensions and margins of the graph
+					var margin = {top: 80, right: 30, bottom: 70, left: 60},
+					    width = 700 - margin.left - margin.right,
+					    height = 400 - margin.top - margin.bottom;
+					// append the svg object to the body of the page
+					var svg = d3.select("#young")
+					  .append("svg")
+					    .attr("width", width + margin.left + margin.right)
+					    .attr("height", height + margin.top + margin.bottom)
+					  .append("g")
+					    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+					svg.append("text")
+						.attr("x", (width / 2))             
+						.attr("y", 0 - (margin.top / 2))
+						.attr("text-anchor", "middle")  
+						.style("font-size", "180%") 
+						.text(charttitle);
+					// Initialize the X axis
+					var x = d3.scaleBand()
+					  .range([ 0, width ])
+					  .padding(0.2);
+					var xAxis = svg.append("g")
+					  .attr("transform", "translate(0," + height + ")")
+					// Initialize the Y axis
+					var y = d3.scaleLinear()
+					  .range([ height, 0]);
+					var yAxis = svg.append("g")
+					  .attr("class", "myYaxis")
+				  	x.domain(data.map(function(d) { return d.group; }))
+				  	xAxis.call(d3.axisBottom(x))
+				  		.selectAll("text") 
+				        .style("text-anchor", "end")
+				        .attr("dx", "-.8em")
+				        .attr("dy", ".15em")
+				        .attr("transform", "rotate(-30)")
+				        .call(wrap, x.bandwidth()); 
+				  	// Update the Y axis
+				  	y.domain([0, d3.max(data, function(d) { return d.value }) ]);
+				  	yAxis.transition().duration(1000).call(d3.axisLeft(y));
+				  	// Create the u variable
+				  	var u = svg.selectAll("rect")
+					    .data(data)
+				  		u
+					    .enter()
+				    	.append("rect") // Add a new rect for each new elements
+				    	.merge(u) // get the already existing elements as well
+				    	.transition() // and apply changes to all of them
+				    	.duration(1000)
+				      	.attr("x", function(d) { return x(d.group); })
+				      	.attr("y", function(d) { return y(d.value); })
+				      	.attr("width", x.bandwidth())
+				      	.attr("height", function(d) { return height - y(d.value); })
+				      	.attr("fill", "#69b3a2")
+				      	
+				  		// If less group in the new dataset, I delete the ones not in use anymore
+				  		u
+					    .exit()
+				    	.remove()
+				    svg.selectAll(".text")        
+					  	.data(data)
+					  	.enter()
+					  	.append("text")
+					  	.attr("text-anchor", "middle")  
+					  	.attr("class","label")
+					  	.attr("x", (function(d) { return x(d.group)+50; }  ))
+					  	.attr("y", function(d) { return y(d.value)-30; })
+					  	.attr("dy", "1.75em")
+					  	.text(function(d) { return d.value; }); 
+					};
+
+			</script>
+		</div>
+    </div>
+    <!-- /.container-fluid-->
+    <!-- /.content-wrapper-->
+    <footer class="sticky-footer">
+		<div class="container">
+			<div class="row no-gutters">
+				<div class="col-md-3 col-lg-3 d-none d-md-block">
+					<div class="row no-gutters">
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/egtaa.jpg" alt="ΕΓΤΑΑ" width="50%" height="5%"></a>
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/paa.jpg" alt="ΠΑΑ" width="30%" height="5%"></a>
+					</div>
+				</div>
+				<div class="col-md-5 col-lg-5 col-12 col-sm-12">
+					<p class="text-center" id="footer"></p>
+				</div>
+				<div class="col-md-3 col-lg-3 d-none d-md-block">
+					<div class="row no-gutters">
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/ypaat.jpg" alt="ΥΠΑΑΤ" width="50%" height="5%"></a>
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/espa.jpg" alt="ΕΣΠΑ" width="50%" height="5%"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fa fa-angle-up"></i>
+    </a>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin.min.js"></script>
+  </div>
+</body>
+
+</html>

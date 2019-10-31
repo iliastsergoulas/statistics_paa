@@ -684,7 +684,7 @@ function myclld(t) {
         }).left - _.right, d = 300 - _.top - _.bottom, n = d3.format(".0%"), p = d3.scale.ordinal().rangeRoundBands([0, c], .1, 1), u = d3.scale.linear().range([d, 0]), m = d3.svg.axis().scale(p).orient("bottom"), f = d3.svg.axis().scale(u).orient("left").tickFormat(n), g = d3.select("#clldentaxeis").append("svg").attr("width", c + _.left + _.right).attr("height", d + _.top + _.bottom).call(responsivefy).append("g").attr("transform", "translate(" + _.left + "," + _.top + ")");
         d3.json("http://data.agrotikianaptixi.gr/myindex.php/otdbullets", function(t, e) {
             e.forEach(function(t) {
-                t.pctent = 0
+                t.pctent = +t.pctent
             }), p.domain(e.map(function(t) {
                 return t.otdsymbol_en
             })), u.domain([0, d3.max(e, function(t) {

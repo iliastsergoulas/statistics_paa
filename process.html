@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title data-translatable>Στατιστικά ΠΑΑ 2014-2020 // RDP 2014-2020 statistics</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.min.js"></script>
+	<script src="js/tether.min.js" type="text/javascript"></script>
+	<script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
+	<script src="js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js" charset="utf-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js" charset="utf-8"></script>
+	<script src="js/jquery.mapael.min.js" charset="utf-8"></script>
+	<script src="js/tabulator.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>
+	<script src="js/functions.js"></script>
+	<script src="https://d3js.org/d3.v4.js"></script>
+	<script src="js/d3-tip.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-131087157-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-131087157-1');
+	</script>
+	<script>
+		var names;
+	    var greeknames=["ΠΑΑ 2014-2020","Το ΠΑΑ σήμερα","Περιφερειακή Ανάλυση","Ανάλυση Πληρωμών","Περιοχές Παρέμβασης","Ανάλυση Μέτρων","Τελευταία ενημέρωση: ",
+	    "© Αναπτύχθηκε από ΕΥΔ ΠΑΑ 2014-2020","Ύψος Επένδυσης","Τομέας Επένδυσης","Είδος Επένδυσης","Μέγεθος Επιχείρησης","Νομική Μορφή",
+	    "Προφίλ μεταποιητικής επιχείρησης","Μεταποίηση γεωργικών προϊόντων","Αριθμός πράξεων","Συνολικός Προϋπολογισμός","Δημόσια Δαπάνη"];
+	    var englishnames=["RDP 2014-2020","RDP today","Regional Analysis","Payments Analysis","Intervention Areas","Measures Analysis","Last Update: ",
+	    "© Developed by Managing Authority RDP 2014-2020","Budget","Investment Sector","Investment Type","Beneficiary size","Legal Entity",
+	    "Food processing beneficiary profile","Food processing","Number of projects","Total budget","Public Expenditure"];
+		window.onload = function(){ 
+			var enImage = document.getElementById('english');
+			var elImage = document.getElementById('greek');
+			mylanguage=localStorage.getItem("language");
+			if (localStorage.getItem("language")){
+		        if (localStorage.language=='en'){
+		          names=englishnames;
+		        } else {
+		          names=greeknames;
+		        };
+		    } else {
+		        localStorage.setItem("language", "el-GR");
+		        names=greeknames;
+		    };
+	        refreshnames();
+	        processchart421count(localStorage.language,'data1');
+	        processchart422count(localStorage.language,'data1');
+	        processchart421budget(localStorage.language,'data1');
+	        processchart422budget(localStorage.language,'data1');
+	        processchart421dd(localStorage.language,'data1');
+	        processchart422dd(localStorage.language,'data1');
+			enImage.onclick = function() {
+				localStorage.setItem("language", "en");
+				names=englishnames;
+				refreshnames();
+				processchart421count(localStorage.language,'data1');
+	        	processchart422count(localStorage.language,'data1');
+	        	processchart421budget(localStorage.language,'data1');
+	        	processchart422budget(localStorage.language,'data1');
+	        	processchart421dd(localStorage.language,'data1');
+	        	processchart422dd(localStorage.language,'data1');
+			};
+			elImage.onclick = function() {
+				localStorage.setItem("language", "el-GR");
+				names=greeknames;
+				refreshnames();
+				processchart421count(localStorage.language,'data1');
+	        	processchart422count(localStorage.language,'data1');
+	        	processchart421budget(localStorage.language,'data1');
+	        	processchart422budget(localStorage.language,'data1');
+	        	processchart421dd(localStorage.language,'data1');
+	        	processchart422dd(localStorage.language,'data1');
+			};
+		};
+		function refreshnames(){
+			document.getElementById('title1').innerHTML=names[0];
+	        document.getElementById('menu1').innerHTML=names[1];
+	        document.getElementById('menu2').innerHTML=names[2];
+	        document.getElementById('menu3').innerHTML=names[3];
+	        document.getElementById('menu4').innerHTML=names[4];
+	        document.getElementById('menu5').innerHTML=names[5];
+	        document.getElementById('updatetext').innerHTML=names[6];
+	        document.getElementById('footer').innerHTML=names[7];
+	        document.getElementById('btnbudget').innerHTML=names[8];
+	        document.getElementById('btnsector').innerHTML=names[9];
+			document.getElementById('btntype').innerHTML=names[10];
+	        document.getElementById('btnlegal').innerHTML=names[11];
+	        document.getElementById('btnsize').innerHTML=names[12];
+	        document.getElementById('sectiontitle').innerHTML=names[13];
+	        document.getElementById('breadcrumb1').innerHTML=names[1];
+	        document.getElementById('breadcrumb2').innerHTML=names[14];
+	        document.getElementById('nav-count-tab').innerHTML=names[15];
+	        document.getElementById('nav-budget-tab').innerHTML=names[16];
+	        document.getElementById('nav-dd-tab').innerHTML=names[17];
+	    };
+	</script>
+	<link type="text/css" rel="stylesheet" href="css/tabulator.min.css">
+	<!-- Bootstrap core CSS-->
+	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Custom fonts for this template-->
+	<link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<!-- Custom styles for this template-->
+	<link href="css/sb-admin.css" rel="stylesheet">
+	<link href="css/rdp.css" rel="stylesheet">
+	<style>
+		.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+		    color: 	#1FA1AE;
+		    background-color: transparent;
+		    border-color: transparent transparent #f3f3f3;
+		    border-bottom: 3px solid !important;
+		    font-size: 16px;
+		    font-weight: bold;
+		}
+		.nav-link {
+		    border: 1px solid transparent;
+		    border-top-left-radius: .25rem;
+		    border-top-right-radius: .25rem;
+		    color: 	#1FA1AE;
+		    font-size: 16px;
+		    font-weight: 600;
+		}
+		.nav-link:hover {
+		    border: none;
+		}
+	</style>
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+	<!-- Navigation-->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" style="background: rgb(35,59,47);
+background: linear-gradient(90deg, rgba(35,59,47,1) 30%, rgba(31,64,47,1) 60%);">
+		<a class="navbar-brand" href="index.html" id="title1"></a>
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion" style="background: rgb(35,59,47);
+background: linear-gradient(90deg, rgba(35,59,47,1) 30%, rgba(31,64,47,1) 60%);">
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Το ΠΑΑ σήμερα">
+					<a class="nav-link" href="index.html">
+						<i class="fa fa-fw fa-dashboard"></i>
+						<span class="nav-link-text" id="menu1"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιφερειακή Ανάλυση">
+					<a class="nav-link" href="regional.html">
+						<i class="fa fa-fw fa-map"></i>
+						<span class="nav-link-text" id="menu2"></span> 
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Πληρωμών">
+					<a class="nav-link" href="payments.html">
+						<i class="fa fa-fw fa-euro"></i>
+						<span class="nav-link-text" id="menu3"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Περιοχές Παρέμβασης">
+					<a class="nav-link" href="webmap.html">
+						<i class="fa fa-fw fa-map-marker"></i>
+						<span class="nav-link-text" id="menu4"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ανάλυση Μέτρων">
+					<a class="nav-link" href="measures.html">
+						<i class="fa fa-fw fa-area-chart"></i>
+						<span class="nav-link-text" id="menu5"></span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="CLLD">
+					<a class="nav-link" href="clld.html">
+						<i class="fa fa-fw fa-bar-chart"></i>
+						<span class="nav-link-text">CLLD</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="greek">
+					<div id="greek" class="d-inline-block" style="padding:5%;"><img width="75%" height="50%" src="images/gr.png" alt="Ελληνικά"/></div>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="english">
+					<div id="english" class="d-inline-block" style="padding:5%;"><img width="75%" height="50%" src="images/en.png" alt="English"/></div>
+				</li>
+			</ul>
+			<ul class="navbar-nav sidenav-toggler">
+				<li class="nav-item">
+					<a class="nav-link text-center" id="sidenavToggler">
+						<i class="fa fa-fw fa-angle-left"></i>
+					</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav ml-auto">
+				<li><p class="text-white d-inline-block" style="white-space: normal !important;word-wrap: break-word !important;" id="updatetext"></p><span class="text-white d-inline-block" id="update"></span></li>
+			</ul>
+		</div>
+	</nav>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+		<ol class="breadcrumb">
+	        <li class="breadcrumb-item">
+	          	<a href="index.html" id="breadcrumb1"></a>
+	        </li>
+	        <li class="breadcrumb-item active" id="breadcrumb2"></li>
+	    </ol>
+		<div class="row no-gutter">
+			<div class="col-12 d-inline-block">
+				<p id="sectiontitle" class="text-center" style="font-size:200%;" data-translatable></p>
+				<div class="row no-gutter" style="width:100%">
+					<button id="btnbudget" class="col-2 btn btn-info text-center" onclick="processchart421count(localStorage.language,'data1');processchart422count(localStorage.language,'data1');processchart421budget(localStorage.language,'data1');processchart422budget(localStorage.language,'data1');processchart421dd(localStorage.language,'data1');processchart422dd(localStorage.language,'data1')"></button>
+					<button id="btnsector" class="col-2 btn btn-info text-center" onclick="processchart421count(localStorage.language,'data2');processchart422count(localStorage.language,'data2');processchart421budget(localStorage.language,'data2');processchart422budget(localStorage.language,'data2');processchart421dd(localStorage.language,'data2');processchart422dd(localStorage.language,'data2')"></button>
+					<button id="btntype" class="col-2 btn btn-info text-center" onclick="processchart421count(localStorage.language,'data3');processchart422count(localStorage.language,'data3');processchart421budget(localStorage.language,'data3');processchart422budget(localStorage.language,'data3');processchart421dd(localStorage.language,'data3');processchart422dd(localStorage.language,'data3')"></button>
+					<button id="btnlegal" class="col-3 btn btn-info text-center" onclick="processchart421count(localStorage.language,'data4');processchart422count(localStorage.language,'data4');processchart421budget(localStorage.language,'data4');processchart422budget(localStorage.language,'data4');processchart421dd(localStorage.language,'data4');processchart422dd(localStorage.language,'data4')"></button>
+					<button id="btnsize" class="col-2 btn btn-info text-center" onclick="processchart421count(localStorage.language,'data5');processchart422count(localStorage.language,'data5');processchart421budget(localStorage.language,'data5');processchart422budget(localStorage.language,'data5');processchart421dd(localStorage.language,'data5');processchart422dd(localStorage.language,'data5')"></button>
+				</div>
+				<nav>
+					<div class="nav nav-tabs nav-fill row no-gutter" id="nav-tab" role="tablist" style="width:100%;">
+						<a class="nav-item nav-link active col-4" id="nav-count-tab" data-toggle="tab" href="#nav-count" role="tab" aria-controls="nav-count" aria-selected="true" data-translatable></a>
+						<a class="nav-item nav-link col-4" id="nav-budget-tab" data-toggle="tab" href="#budget-tab" role="tab" aria-controls="dd" aria-selected="false" data-translatable></a>
+						<a class="nav-item nav-link col-4" id="nav-dd-tab" data-toggle="tab" href="#dd-tab" role="tab" aria-controls="dd" aria-selected="false" data-translatable></a>
+					</div>
+				</nav>
+				<div class="tab-content" id="nav-tabContent">
+					<div class="tab-pane fade show active" id="nav-count" role="tabpanel" aria-labelledby="nav-count-tab">
+						<div id="processing421count"></div>
+						<div id="processing422count"></div>
+					</div>
+					<div class="tab-pane fade" id="budget-tab" role="tabpanel" aria-labelledby="budget-tab">
+						<div id="processing421budget"></div>
+						<div id="processing422budget"></div>
+					</div>
+					<div class="tab-pane fade" id="dd-tab" role="tabpanel" aria-labelledby="dd-tab">
+						<div id="processing421dd"></div>
+						<div id="processing422dd"></div>
+					</div>
+				</div>
+			</div>
+			<script>
+				function wrap(text, width) {
+				  	text.each(function() {
+				    var text = d3.select(this),
+				        words = text.text().split(/\s+/).reverse(),
+				        word,
+				        line = [],
+				        lineNumber = 0,
+				        lineHeight = 1.1, // ems
+				        y = text.attr("y"),
+				        dy = parseFloat(text.attr("dy")),
+				        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em")
+				    while (word = words.pop()) {
+				      line.push(word)
+				      tspan.text(line.join(" "))
+				      if (tspan.node().getComputedTextLength() > width) {
+				        line.pop()
+				        tspan.text(line.join(" "))
+				        line = [word]
+				        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", `${++lineNumber * lineHeight + dy}em`).text(word)
+				      }
+				    }
+				  })
+				};
+				function processchart421count(language,mydata){
+					d3.select("#processing421count").selectAll("svg").remove();
+					var data1 = [
+					   {group: "600.000-1.000.000 €", value: 10},
+					   {group: "1.000.000-2.000.000 €", value: 45},
+					   {group: "2.000.000-5.000.000 €", value: 45}
+					];
+					if (language=='el-GR'){
+						var data2 = [
+						   {group: "Κρέας – πουλερικά – κουνέλια", value: 7.83},
+						   {group: "Γάλα", value: 16.3},
+						   {group: "Αυγά", value: 0.43},
+						   {group: "Διάφορα ζώα", value: 1.96},
+						   {group: "Ζωοτροφές", value: 5.65},
+						   {group: "Δημητριακά", value: 6.3},
+						   {group: "Ελαιούχα Προϊόντα", value: 14.78},
+						   {group: "Οίνος", value: 10.87},
+						   {group: "Οπωροκηπευτικά, ακρόδρυα, ξηροί καρποί", value: 31.09},
+						   {group: "Φαρμ. και Αρωμ. Φυτά", value: 1.96},
+						   {group: "Σπόροι & Πολλ. Υλικό", value: 2.17},
+						   {group: "Ξύδι", value: 0.65}
+						];
+						var data3 = [
+						   {group: "Ίδρυση", value: 31.07},
+						   {group: "Εκσυγχρονισμός", value: 63.46},
+						   {group: "Μετεγκατάσταση", value: 5.03},
+						   {group: "Συγχώνευση", value: 0.44}
+						];
+						var data4 = [
+						   {group: "Πολύ μικρή", value: 39.15},
+						   {group: "Μικρή", value: 31.6},
+						   {group: "Μεσαία", value: 21.46},
+						   {group: "Μεγάλη", value: 7.78}
+						];
+						var data5 = [
+						   {group: "ΑΕ", value: 48.58},
+						   {group: "ΕΕ", value: 3.3},
+						   {group: "ΟΕ", value: 10.61},
+						   {group: "ΙΚΕ", value: 9.91},
+						   {group: "ΕΠΕ", value: 5.42},
+						   {group: "ΜΕΠΕ", value: 1.89},
+						   {group: "Αγροτικός Συνεταιρισμός", value: 8.96},
+						   {group: "Αγροτική Εταιρική Σύμπραξη", value: 0.24}
+						];
+						var charttitles = ["Ύψος Επένδυσης","Τομέας","Είδος Επένδυσης","Μέγεθος Επιχείρησης","Νομική Μορφή"];
+					} else {
+						var data2 = [
+						   {group: "Meat - poultry - hares", value: 7.83},
+						   {group: "Milk", value: 16.3},
+						   {group: "Eggs", value: 0.43},
+						   {group: "Sericulture - beekeeping - snail farming - various animals", value: 1.96},
+						   {group: "Animal food", value: 5.65},
+						   {group: "Cereal", value: 6.3},
+						   {group: "Olive oil products", value: 14.78},
+						   {group: "Wine", value: 10.87},
+						   {group: "Fruit and vegetables, nuts", value: 31.09},
+						   {group: "Pharmaceutical and Aromatic Plants", value: 1.96},
+						   {group: "Seeds & Propagating Material", value: 2.17},
+						   {group: "Vinegar", value: 0.65}
+						];
+						var data3 = [
+						   {group: "Establishment", value: 31.07},
+						   {group: "Modernization", value: 63.46},
+						   {group: "Relocation", value: 5.03},
+						   {group: "Merger", value: 0.44}
+						];
+						var data4 = [
+						   {group: "Very small", value: 39.15},
+						   {group: "Small", value: 31.6},
+						   {group: "Medium", value: 21.46},
+						   {group: "Large", value: 7.78}
+						];
+						var data5 = [
+						   {group: "S.A.", value: 48.58},
+						   {group: "Limited partnership", value: 3.3},
+						   {group: "General partnership", value: 10.61},
+						   {group: "Private company", value: 9.91},
+						   {group: "Ltd", value: 5.42},
+						   {group: "Single member Ltd", value: 1.89},
+						   {group: "Cooperative", value: 8.96},
+						   {group: "Cooperation", value: 0.24}
+						];
+						var charttitles = ["Budget","Sector","Investment Type","Beneficiary size","Legal Entity"];
+					}
+					charttitle=charttitles[0];
+					switch(mydata) {
+					  	case "data1":
+					  		data=data1;
+					  		charttitle=charttitles[0]+" - 4.2.1 (>600.000 €)";					    	
+					  		break;
+					  	case "data2":
+					  		data=data2;
+					  		charttitle=charttitles[1]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					    case "data3":
+					    	data=data3;
+					    	charttitle=charttitles[2]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					  	case "data4":
+					  		data=data4;
+					  		charttitle=charttitles[3]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					    case "data5":
+					    	data=data5;
+					    	charttitle=charttitles[4]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					  	case "data6":
+					  		data=data6;
+					  		charttitle=charttitles[5]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					  	default:
+					};
+					// set the dimensions and margins of the graph
+					var margin = {top: 80, right: 30, bottom: 70, left: 60},
+					    width = 1000 - margin.left - margin.right,
+					    height = 300 - margin.top - margin.bottom;
+					// append the svg object to the body of the page
+					var svg = d3.select("#processing421count")
+					  .append("svg")
+					    .attr("width", width + margin.left + margin.right)
+					    .attr("height", height + margin.top + margin.bottom)
+					  .append("g")
+					    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+					svg.append("text")
+						.attr("x", (width / 2))             
+						.attr("y", 0 - (margin.top / 2))
+						.attr("text-anchor", "middle")  
+						.style("font-size", "180%") 
+						.text(charttitle);
+					// Initialize the X axis
+					var x = d3.scaleBand()
+					  .range([ 0, width ])
+					  .padding(0.2);
+					var xAxis = svg.append("g")
+					  .attr("transform", "translate(0," + height + ")")
+					// Initialize the Y axis
+					var y = d3.scaleLinear()
+					  .range([ height, 0]);
+					var yAxis = svg.append("g")
+					  .attr("class", "myYaxis")
+				  	x.domain(data.map(function(d) { return d.group; }))
+				  	xAxis.call(d3.axisBottom(x))
+				  		.selectAll("text") 
+				        .style("text-anchor", "end")
+				        .attr("dx", "-.8em")
+				        .attr("dy", ".15em")
+				        .attr("transform", "rotate(-30)")
+				        .call(wrap, x.bandwidth()); 
+				  	// Update the Y axis
+				  	y.domain([0, d3.max(data, function(d) { return d.value }) ]);
+				  	yAxis.transition().duration(1000).call(d3.axisLeft(y));
+				  	// Create the u variable
+				  	var u = svg.selectAll("rect")
+					    .data(data)
+				  		u
+					    .enter()
+				    	.append("rect") // Add a new rect for each new elements
+				    	.merge(u) // get the already existing elements as well
+				    	.transition() // and apply changes to all of them
+				    	.duration(1000)
+				      	.attr("x", function(d) { return x(d.group); })
+				      	.attr("y", function(d) { return y(d.value); })
+				      	.attr("width", x.bandwidth())
+				      	.attr("height", function(d) { return height - y(d.value); })
+				      	.attr("fill", "#69b3a2")
+				      	
+				  		// If less group in the new dataset, I delete the ones not in use anymore
+				  		u
+					    .exit()
+				    	.remove()
+				    svg.selectAll(".text")        
+					  	.data(data)
+					  	.enter()
+					  	.append("text")
+					  	.attr("text-anchor", "middle")  
+					  	.attr("class","label")
+					  	.attr("x", (function(d) { return x(d.group)+50; }  ))
+					  	.attr("y", function(d) { return y(d.value)-30; })
+					  	.attr("dy", "1.75em")
+					  	.text(function(d) { return d.value; }); 
+					// text label for the y axis
+					svg.append("text")
+					  	.attr("transform", "rotate(-90)")
+					    .attr("y", 0 - margin.left)
+					    .attr("x",0 - (height / 2))
+					    .attr("dy", "1em")
+					    .style("text-anchor", "middle")
+					    .text("%");   
+				};
+				function processchart421budget(language,mydata){
+					d3.select("#processing421budget").selectAll("svg").remove();
+					var data1 = [
+					   {group: "600.000-1.000.000 €", value: 10},
+					   {group: "1.000.000-2.000.000 €", value: 45},
+					   {group: "2.000.000-5.000.000 €", value: 45}
+					];
+					if (language=='el-GR'){
+						var data2 = [
+						   {group: "Κρέας – πουλερικά – κουνέλια", value: 9.9},
+						   {group: "Γάλα", value: 18.79},
+						   {group: "Αυγά", value: 0.39},
+						   {group: "Διάφορα ζώα", value: 1.87},
+						   {group: "Ζωοτροφές", value: 4.82},
+						   {group: "Δημητριακά", value: 7.63},
+						   {group: "Ελαιούχα Προϊόντα", value: 10.52},
+						   {group: "Οίνος", value: 8.39},
+						   {group: "Οπωροκηπευτικά, ακρόδρυα, ξηροί καρποί", value: 33.21},
+						   {group: "Φαρμ. και Αρωμ. Φυτά", value: 1.73},
+						   {group: "Σπόροι & Πολλ. Υλικό", value: 2.24},
+						   {group: "Ξύδι", value: 0.5}
+						];
+						var data3 = [
+						   {group: "Ίδρυση", value: 30.98},
+						   {group: "Εκσυγχρονισμός", value: 64.58},
+						   {group: "Μετεγκατάσταση", value: 3.89},
+						   {group: "Συγχώνευση", value: 0.55}
+						];
+						var data4 = [
+						   {group: "Πολύ μικρή", value: 28.28},
+						   {group: "Μικρή", value: 28.33},
+						   {group: "Μεσαία", value: 29.09},
+						   {group: "Μεγάλη", value: 14.3}
+						];
+						var data5 = [
+						   {group: "ΑΕ", value: 60.42},
+						   {group: "ΕΕ", value: 2.19},
+						   {group: "ΟΕ", value: 7.29},
+						   {group: "ΙΚΕ", value: 8.07},
+						   {group: "ΕΠΕ", value: 5.55},
+						   {group: "ΜΕΠΕ", value: 1.26},
+						   {group: "Αγροτικός Συνεταιρισμός", value: 7.9},
+						   {group: "Αγροτική Εταιρική Σύμπραξη", value: 0.54}
+						];
+						var charttitles = ["Ύψος Επένδυσης","Τομέας","Είδος Επένδυσης","Μέγεθος Επιχείρησης","Νομική Μορφή"];
+					} else {
+						var data2 = [
+						   {group: "Meat - poultry - hares", value: 9.9},
+						   {group: "Milk", value: 18.79},
+						   {group: "Eggs", value: 0.39},
+						   {group: "Sericulture - beekeeping - snail farming - various animals", value: 1.87},
+						   {group: "Animal food", value: 4.82},
+						   {group: "Cereal", value: 7.63},
+						   {group: "Olive oil products", value: 10.52},
+						   {group: "Wine", value: 8.39},
+						   {group: "Fruit and vegetables, nuts", value: 33.21},
+						   {group: "Pharmaceutical and Aromatic Plants", value: 1.73},
+						   {group: "Seeds & Propagating Material", value: 2.24},
+						   {group: "Vinegar", value: 0.5}
+						];
+						var data3 = [
+						   {group: "Establishment", value: 30.98},
+						   {group: "Modernization", value: 64.58},
+						   {group: "Relocation", value: 3.89},
+						   {group: "Merger", value: 0.55}
+						];
+						var data4 = [
+						   {group: "Very small", value: 28.28},
+						   {group: "Small", value: 28.33},
+						   {group: "Medium", value: 29.09},
+						   {group: "Large", value: 14.3}
+						];
+						var data5 = [
+						   {group: "S.A.", value: 60.42},
+						   {group: "Limited partnership", value: 2.19},
+						   {group: "General partnership", value: 7.29},
+						   {group: "Private Company", value: 8.07},
+						   {group: "Ltd", value: 5.55},
+						   {group: "Single member Ltd", value: 1.26},
+						   {group: "Cooperative", value: 7.9},
+						   {group: "Cooperation", value: 0.54}
+						];
+						var charttitles = ["Budget","Sector","Investment Type","Beneficiary size","Legal Entity"];
+					}
+					charttitle=charttitles[0];
+					switch(mydata) {
+					  	case "data1":
+					  		data=data1;
+					  		charttitle=charttitles[0]+" - 4.2.1 (>600.000 €)";					    	
+					  		break;
+					  	case "data2":
+					  		data=data2;
+					  		charttitle=charttitles[1]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					    case "data3":
+					    	data=data3;
+					    	charttitle=charttitles[2]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					  	case "data4":
+					  		data=data4;
+					  		charttitle=charttitles[3]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					    case "data5":
+					    	data=data5;
+					    	charttitle=charttitles[4]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					  	case "data6":
+					  		data=data6;
+					  		charttitle=charttitles[5]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					  	default:
+					};
+					// set the dimensions and margins of the graph
+					var margin = {top: 80, right: 30, bottom: 70, left: 60},
+					    width = 1000 - margin.left - margin.right,
+					    height = 300 - margin.top - margin.bottom;
+					// append the svg object to the body of the page
+					var svg = d3.select("#processing421budget")
+					  .append("svg")
+					    .attr("width", width + margin.left + margin.right)
+					    .attr("height", height + margin.top + margin.bottom)
+					  .append("g")
+					    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+					svg.append("text")
+						.attr("x", (width / 2))             
+						.attr("y", 0 - (margin.top / 2))
+						.attr("text-anchor", "middle")  
+						.style("font-size", "180%") 
+						.text(charttitle);
+					// Initialize the X axis
+					var x = d3.scaleBand()
+					  .range([ 0, width ])
+					  .padding(0.2);
+					var xAxis = svg.append("g")
+					  .attr("transform", "translate(0," + height + ")")
+					// Initialize the Y axis
+					var y = d3.scaleLinear()
+					  .range([ height, 0]);
+					var yAxis = svg.append("g")
+					  .attr("class", "myYaxis")
+				  	x.domain(data.map(function(d) { return d.group; }))
+				  	xAxis.call(d3.axisBottom(x))
+				  		.selectAll("text") 
+				        .style("text-anchor", "end")
+				        .attr("dx", "-.8em")
+				        .attr("dy", ".15em")
+				        .attr("transform", "rotate(-30)")
+				        .call(wrap, x.bandwidth()); 
+				  	// Update the Y axis
+				  	y.domain([0, d3.max(data, function(d) { return d.value }) ]);
+				  	yAxis.transition().duration(1000).call(d3.axisLeft(y));
+				  	// Create the u variable
+				  	var u = svg.selectAll("rect")
+					    .data(data)
+				  		u
+					    .enter()
+				    	.append("rect") // Add a new rect for each new elements
+				    	.merge(u) // get the already existing elements as well
+				    	.transition() // and apply changes to all of them
+				    	.duration(1000)
+				      	.attr("x", function(d) { return x(d.group); })
+				      	.attr("y", function(d) { return y(d.value); })
+				      	.attr("width", x.bandwidth())
+				      	.attr("height", function(d) { return height - y(d.value); })
+				      	.attr("fill", "#69b3a2")
+				      	
+				  		// If less group in the new dataset, I delete the ones not in use anymore
+				  		u
+					    .exit()
+				    	.remove()
+				    svg.selectAll(".text")        
+					  	.data(data)
+					  	.enter()
+					  	.append("text")
+					  	.attr("text-anchor", "middle")  
+					  	.attr("class","label")
+					  	.attr("x", (function(d) { return x(d.group)+50; }  ))
+					  	.attr("y", function(d) { return y(d.value)-30; })
+					  	.attr("dy", "1.75em")
+					  	.text(function(d) { return d.value; }); 
+				};
+				function processchart421dd(language,mydata){
+					d3.select("#processing421dd").selectAll("svg").remove();
+					var data1 = [
+					   {group: "600.000-1.000.000 €", value: 10},
+					   {group: "1.000.000-2.000.000 €", value: 45},
+					   {group: "2.000.000-5.000.000 €", value: 45}
+					];
+					if (language=='el-GR'){
+						var data2 = [
+						   {group: "Κρέας – πουλερικά – κουνέλια", value: 9.15},
+						   {group: "Γάλα", value: 19.31},
+						   {group: "Αυγά", value: 0.37},
+						   {group: "Διάφορα ζώα", value: 1.90},
+						   {group: "Ζωοτροφές", value: 4.89},
+						   {group: "Δημητριακά", value: 7.36},
+						   {group: "Ελαιούχα Προϊόντα", value: 11.02},
+						   {group: "Οίνος", value: 9.77},
+						   {group: "Οπωροκηπευτικά, ακρόδρυα, ξηροί καρποί", value: 31.76},
+						   {group: "Φαρμ. και Αρωμ. Φυτά", value: 1.88},
+						   {group: "Σπόροι & Πολλ. Υλικό", value: 2.14},
+						   {group: "Ξύδι", value: 0.44}
+						];
+						var data3 = [
+						   {group: "Ίδρυση", value: 31.76},
+						   {group: "Εκσυγχρονισμός", value: 63.74},
+						   {group: "Μετεγκατάσταση", value: 3.97},
+						   {group: "Συγχώνευση", value: 0.53}
+						];
+						var data4 = [
+						   {group: "Πολύ μικρή", value: 30.03},
+						   {group: "Μικρή", value: 28.53},
+						   {group: "Μεσαία", value: 28.21},
+						   {group: "Μεγάλη", value: 13.23}
+						];
+						var data5 = [
+						   {group: "ΑΕ", value: 58.77},
+						   {group: "ΕΕ", value: 2.41},
+						   {group: "ΟΕ", value: 7.22},
+						   {group: "ΙΚΕ", value: 8.93},
+						   {group: "ΕΠΕ", value: 5.25},
+						   {group: "ΜΕΠΕ", value: 1.32},
+						   {group: "Αγροτικός Συνεταιρισμός", value: 8.22},
+						   {group: "Αγροτική Εταιρική Σύμπραξη", value: 0.52}
+						];
+						var charttitles = ["Ύψος Επένδυσης","Τομέας","Είδος Επένδυσης","Μέγεθος Επιχείρησης","Νομική Μορφή"];
+					} else {
+						var data2 = [
+						   {group: "Meat - poultry - hares", value: 9.15},
+						   {group: "Milk", value: 19.31},
+						   {group: "Eggs", value: 0.37},
+						   {group: "Serpentine - beekeeping - snail farming - various animals", value: 1.90},
+						   {group: "Animal food", value: 4.89},
+						   {group: "Cereal", value: 7.36},
+						   {group: "Olive oil products", value: 11.02},
+						   {group: "Wine", value: 9.77},
+						   {group: "Fruit and vegetables, nuts", value: 31.76},
+						   {group: "Pharmaceutical and Aromatic Plants", value: 1.88},
+						   {group: "Seeds & Propagating Material", value: 2.14},
+						   {group: "Vinegar", value: 0.44}
+						];
+						var data3 = [
+						   {group: "Establishment", value: 45.03},
+						   {group: "Modernization", value: 68.44},
+						   {group: "Relocation", value: 7.69},
+						   {group: "Merger", value: 0}
+						];
+						var data4 = [
+						   {group: "Very small", value: 30.03},
+						   {group: "Small", value: 28.53},
+						   {group: "Medium", value: 28.21},
+						   {group: "Large", value: 13.23}
+						];
+						var data5 = [
+						   {group: "S.A.", value: 58.77},
+						   {group: "Limited partnership", value: 2.41},
+						   {group: "General partnership", value: 7.22},
+						   {group: "Private Company", value: 8.93},
+						   {group: "Ltd", value: 5.25},
+						   {group: "Single member Ltd", value: 1.32},
+						   {group: "Cooperative", value: 8.22},
+						   {group: "Cooperation", value: 0.52}
+						];
+						var charttitles = ["Budget","Sector","Investment Type","Beneficiary size","Legal Entity"];
+					}
+					charttitle=charttitles[0];
+					switch(mydata) {
+					  	case "data1":
+					  		data=data1;
+					  		charttitle=charttitles[0]+" - 4.2.1 (>600.000 €)";					    	
+					  		break;
+					  	case "data2":
+					  		data=data2;
+					  		charttitle=charttitles[1]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					    case "data3":
+					    	data=data3;
+					    	charttitle=charttitles[2]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					  	case "data4":
+					  		data=data4;
+					  		charttitle=charttitles[3]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					    case "data5":
+					    	data=data5;
+					    	charttitle=charttitles[4]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					  	case "data6":
+					  		data=data6;
+					  		charttitle=charttitles[5]+" - 4.2.1 (>600.000 €)";
+					    	break;
+					  	default:
+					};
+					// set the dimensions and margins of the graph
+					var margin = {top: 80, right: 30, bottom: 70, left: 60},
+					    width = 1000 - margin.left - margin.right,
+					    height = 300 - margin.top - margin.bottom;
+					// append the svg object to the body of the page
+					var svg = d3.select("#processing421dd")
+					  .append("svg")
+					    .attr("width", width + margin.left + margin.right)
+					    .attr("height", height + margin.top + margin.bottom)
+					  .append("g")
+					    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+					svg.append("text")
+						.attr("x", (width / 2))             
+						.attr("y", 0 - (margin.top / 2))
+						.attr("text-anchor", "middle")  
+						.style("font-size", "180%") 
+						.text(charttitle);
+					// Initialize the X axis
+					var x = d3.scaleBand()
+					  .range([ 0, width ])
+					  .padding(0.2);
+					var xAxis = svg.append("g")
+					  .attr("transform", "translate(0," + height + ")")
+					// Initialize the Y axis
+					var y = d3.scaleLinear()
+					  .range([ height, 0]);
+					var yAxis = svg.append("g")
+					  .attr("class", "myYaxis")
+				  	x.domain(data.map(function(d) { return d.group; }))
+				  	xAxis.call(d3.axisBottom(x))
+				  		.selectAll("text") 
+				        .style("text-anchor", "end")
+				        .attr("dx", "-.8em")
+				        .attr("dy", ".15em")
+				        .attr("transform", "rotate(-30)")
+				        .call(wrap, x.bandwidth()); 
+				  	// Update the Y axis
+				  	y.domain([0, d3.max(data, function(d) { return d.value }) ]);
+				  	yAxis.transition().duration(1000).call(d3.axisLeft(y));
+				  	// Create the u variable
+				  	var u = svg.selectAll("rect")
+					    .data(data)
+				  		u
+					    .enter()
+				    	.append("rect") // Add a new rect for each new elements
+				    	.merge(u) // get the already existing elements as well
+				    	.transition() // and apply changes to all of them
+				    	.duration(1000)
+				      	.attr("x", function(d) { return x(d.group); })
+				      	.attr("y", function(d) { return y(d.value); })
+				      	.attr("width", x.bandwidth())
+				      	.attr("height", function(d) { return height - y(d.value); })
+				      	.attr("fill", "#69b3a2")
+				      	
+				  		// If less group in the new dataset, I delete the ones not in use anymore
+				  		u
+					    .exit()
+				    	.remove()
+				    svg.selectAll(".text")        
+					  	.data(data)
+					  	.enter()
+					  	.append("text")
+					  	.attr("text-anchor", "middle")  
+					  	.attr("class","label")
+					  	.attr("x", (function(d) { return x(d.group)+50; }  ))
+					  	.attr("y", function(d) { return y(d.value)-30; })
+					  	.attr("dy", "1.75em")
+					  	.text(function(d) { return d.value; }); 
+				};
+				function processchart422count(language,mydata){
+					d3.select("#processing422count").selectAll("svg").remove();
+					var data1 = [
+					   {group: "600.000-1.000.000 €", value: 10},
+					   {group: "1.000.000-2.000.000 €", value: 45},
+					   {group: "2.000.000-3.000.000 €", value: 45}
+					];
+					if (language=='el-GR'){
+						var data2 = [
+						   {group: "Επεξεργασία καπνού", value: 0},
+						   {group: "Ζυθοποιία", value: 9.52},
+						   {group: "Προϊόντα κυψέλης", value: 0},
+						   {group: "Αιθέρια έλαια", value: 4.76},
+						   {group: "Πυρηνελαιουργεία", value: 19.05},
+						   {group: "Αποστάγματα", value: 14.29},
+						   {group: "Κοσμετολογία - διατροφή", value: 33.33},
+						   {group: "Θρέψη φυτών", value: 4.76},
+						   {group: "Πυτιά και συμπυκνώματα αυτής", value: 0},
+						   {group: "Παραπροϊόντα και υπολλείμματα βιομηχανιών ειδών διατροφής", value: 4.76},
+						   {group: "Επεξεργασία βάμβακος και λοιπών κλωστικών ινών", value: 9.52}
+						];
+						var data3 = [
+						   {group: "Ίδρυση", value: 39.13},
+						   {group: "Εκσυγχρονισμός", value: 55.52},
+						   {group: "Μετεγκατάσταση", value: 4.35},
+						   {group: "Συγχώνευση", value: 0}
+						];
+						var data4 = [
+						   {group: "Πολύ μικρή", value: 16.67},
+						   {group: "Μικρή", value: 33.33},
+						   {group: "Μεσαία", value: 50}
+						];
+						var data5 = [
+						   {group: "ΑΕ", value: 66.67},
+						   {group: "ΟΕ", value: 11.11},
+						   {group: "ΙΚΕ", value: 11.11},
+						   {group: "ΕΠΕ", value: 5.56},
+						   {group: "Αγροτικός Συνεταιρισμός", value: 5.56}
+						];
+						var charttitles = ["Ύψος Επένδυσης","Τομέας","Είδος Επένδυσης","Μέγεθος Επιχείρησης","Νομική Μορφή"];
+					} else {
+						var data2 = [
+						   {group: "Tobacco", value: 0},
+						   {group: "Beer", value: 9.52},
+						   {group: "Beehive products", value: 0},
+						   {group: "Essences", value: 4.76},
+						   {group: "Core oil press", value: 19.05},
+						   {group: "Distilleries", value: 14.29},
+						   {group: "Cosmetology - Nutrition", value: 33.33},
+						   {group: "Plant Nutrition", value: 4.76},
+						   {group: "Rennet and concentrates thereof", value: 0},
+						   {group: "By-products and residues from the food industries", value: 4.76},
+						   {group: "Cotton and other textile fibers", value: 9.52}
+						];
+						var data3 = [
+						   {group: "Establishment", value: 39.13},
+						   {group: "Modernization", value: 55.52},
+						   {group: "Relocation", value: 4.35},
+						   {group: "Merger", value: 0}
+						];
+						var data4 = [
+						   {group: "Very small", value: 16.67},
+						   {group: "Small", value: 33.33},
+						   {group: "Medium", value: 50}
+						];
+						var data5 = [
+						   {group: "S.A.", value: 66.67},
+						   {group: "General partnership", value: 11.11},
+						   {group: "Private company", value: 11.11},
+						   {group: "Ltd", value: 5.56},
+						   {group: "Cooperative", value: 5.56}
+						];
+						var charttitles = ["Budget","Sector","Investment Type","Beneficiary size","Legal Entity"];
+					}
+					charttitle=charttitles[0];
+					switch(mydata) {
+					  	case "data1":
+					  		data=data1;
+					  		charttitle=charttitles[0]+" - 4.2.2 (>600.000 €)";					    	
+					  		break;
+					  	case "data2":
+					  		data=data2;
+					  		charttitle=charttitles[1]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					    case "data3":
+					    	data=data3;
+					    	charttitle=charttitles[2]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					  	case "data4":
+					  		data=data4;
+					  		charttitle=charttitles[3]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					    case "data5":
+					    	data=data5;
+					    	charttitle=charttitles[4]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					  	case "data6":
+					  		data=data6;
+					  		charttitle=charttitles[5]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					  	default:
+					};
+					// set the dimensions and margins of the graph
+					var margin = {top: 80, right: 30, bottom: 70, left: 60},
+					    width = 1000 - margin.left - margin.right,
+					    height = 300 - margin.top - margin.bottom;
+					// append the svg object to the body of the page
+					var svg = d3.select("#processing422count")
+					  .append("svg")
+					    .attr("width", width + margin.left + margin.right)
+					    .attr("height", height + margin.top + margin.bottom)
+					  .append("g")
+					    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+					svg.append("text")
+						.attr("x", (width / 2))             
+						.attr("y", 0 - (margin.top / 2))
+						.attr("text-anchor", "middle")  
+						.style("font-size", "180%") 
+						.text(charttitle);
+					// Initialize the X axis
+					var x = d3.scaleBand()
+					  .range([ 0, width ])
+					  .padding(0.2);
+					var xAxis = svg.append("g")
+					  .attr("transform", "translate(0," + height + ")")
+					// Initialize the Y axis
+					var y = d3.scaleLinear()
+					  .range([ height, 0]);
+					var yAxis = svg.append("g")
+					  .attr("class", "myYaxis")
+				  	x.domain(data.map(function(d) { return d.group; }))
+				  	xAxis.call(d3.axisBottom(x))
+				  		.selectAll("text") 
+				        .style("text-anchor", "end")
+				        .attr("dx", "-.8em")
+				        .attr("dy", ".15em")
+				        .attr("transform", "rotate(-30)")
+				        .call(wrap, x.bandwidth()); 
+				  	// Update the Y axis
+				  	y.domain([0, d3.max(data, function(d) { return d.value }) ]);
+				  	yAxis.transition().duration(1000).call(d3.axisLeft(y));
+				  	// Create the u variable
+				  	var u = svg.selectAll("rect")
+					    .data(data)
+				  		u
+					    .enter()
+				    	.append("rect") // Add a new rect for each new elements
+				    	.merge(u) // get the already existing elements as well
+				    	.transition() // and apply changes to all of them
+				    	.duration(1000)
+				      	.attr("x", function(d) { return x(d.group); })
+				      	.attr("y", function(d) { return y(d.value); })
+				      	.attr("width", x.bandwidth())
+				      	.attr("height", function(d) { return height - y(d.value); })
+				      	.attr("fill", "#69b3a2")
+				  		// If less group in the new dataset, I delete the ones not in use anymore
+				  		u
+					    .exit()
+				    	.remove()
+				    svg.selectAll(".text")        
+					  	.data(data)
+					  	.enter()
+					  	.append("text")
+					  	.attr("text-anchor", "middle")  
+					  	.attr("class","label")
+					  	.attr("x", (function(d) { return x(d.group)+50; }  ))
+					  	.attr("y", function(d) { return y(d.value)-30; })
+					  	.attr("dy", "1.75em")
+					  	.text(function(d) { return d.value; }); 
+				};
+				function processchart422budget(language,mydata){
+					d3.select("#processing422budget").selectAll("svg").remove();
+					var data1 = [
+					   {group: "600.000-1.000.000 €", value: 10},
+					   {group: "1.000.000-2.000.000 €", value: 45},
+					   {group: "2.000.000-3.000.000 €", value: 45}
+					];
+					if (language=='el-GR'){
+						var data2 = [
+						   {group: "Επεξεργασία καπνού", value: 0},
+						   {group: "Ζυθοποιία", value: 6.25},
+						   {group: "Προϊόντα κυψέλης", value: 0},
+						   {group: "Αιθέρια έλαια", value: 7.8},
+						   {group: "Πυρηνελαιουργεία", value: 24.19},
+						   {group: "Αποστάγματα", value: 7.31},
+						   {group: "Κοσμετολογία - διατροφή", value: 43.98},
+						   {group: "Θρέψη φυτών", value: 2.66},
+						   {group: "Πυτιά και συμπυκνώματα αυτής", value: 0},
+						   {group: "Παραπροϊόντα και υπολλείμματα βιομηχανιών ειδών διατροφής", value: 3.11},
+						   {group: "Επεξεργασία βάμβακος και λοιπών κλωστικών ινών", value: 12.51}
+						];
+						var data3 = [
+						   {group: "Ίδρυση", value: 45.03},
+						   {group: "Εκσυγχρονισμός", value: 68.44},
+						   {group: "Μετεγκατάσταση", value: 7.69},
+						   {group: "Συγχώνευση", value: 0}
+						];
+						var data4 = [
+						   {group: "Πολύ μικρή", value: 16.67},
+						   {group: "Μικρή", value: 33.33},
+						   {group: "Μεσαία", value: 50}
+						];
+						var data5 = [
+						   {group: "ΑΕ", value: 66.67},
+						   {group: "ΟΕ", value: 11.11},
+						   {group: "ΙΚΕ", value: 11.11},
+						   {group: "ΕΠΕ", value: 5.56},
+						   {group: "Αγροτικός Συνεταιρισμός", value: 5.56}
+						];
+						var charttitles = ["Ύψος Επένδυσης","Τομέας","Είδος Επένδυσης","Μέγεθος Επιχείρησης","Νομική Μορφή"];
+					} else {
+						var data2 = [
+						   {group: "Tobacco", value: 0},
+						   {group: "Beer", value: 6.25},
+						   {group: "Beehive products", value: 0},
+						   {group: "Essences", value: 7.8},
+						   {group: "Core oil press", value: 24.19},
+						   {group: "Distilleries", value: 7.31},
+						   {group: "Cosmetology - nutrition", value: 43.98},
+						   {group: "Plant nutrition", value: 2.66},
+						   {group: "Rennet and concentrates thereof", value: 0},
+						   {group: "By-products and residues from the food industries", value: 3.11},
+						   {group: "Cotton and other textile fibers", value: 12.51}
+						];
+						var data3 = [
+						   {group: "Establishment", value: 45.03},
+						   {group: "Modernization", value: 68.44},
+						   {group: "Relocation", value: 7.69},
+						   {group: "Merger", value: 0}
+						];
+						var data4 = [
+						   {group: "Very small", value: 16.67},
+						   {group: "Small", value: 33.33},
+						   {group: "Medium", value: 50}
+						];
+						var data5 = [
+						   {group: "S.A.", value: 66.67},
+						   {group: "General partnership", value: 11.11},
+						   {group: "Private Company", value: 11.11},
+						   {group: "Ltd", value: 5.56},
+						   {group: "Cooperative", value: 5.56}
+						];
+						var charttitles = ["Budget","Sector","Investment Type","Beneficiary size","Legal Entity"];
+					}
+					charttitle=charttitles[0];
+					switch(mydata) {
+					  	case "data1":
+					  		data=data1;
+					  		charttitle=charttitles[0]+" - 4.2.2 (>600.000 €)";					    	
+					  		break;
+					  	case "data2":
+					  		data=data2;
+					  		charttitle=charttitles[1]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					    case "data3":
+					    	data=data3;
+					    	charttitle=charttitles[2]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					  	case "data4":
+					  		data=data4;
+					  		charttitle=charttitles[3]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					    case "data5":
+					    	data=data5;
+					    	charttitle=charttitles[4]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					  	case "data6":
+					  		data=data6;
+					  		charttitle=charttitles[5]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					  	default:
+					};
+					// set the dimensions and margins of the graph
+					var margin = {top: 80, right: 30, bottom: 70, left: 60},
+					    width = 1000 - margin.left - margin.right,
+					    height = 300 - margin.top - margin.bottom;
+					// append the svg object to the body of the page
+					var svg = d3.select("#processing422budget")
+					  .append("svg")
+					    .attr("width", width + margin.left + margin.right)
+					    .attr("height", height + margin.top + margin.bottom)
+					  .append("g")
+					    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+					svg.append("text")
+						.attr("x", (width / 2))             
+						.attr("y", 0 - (margin.top / 2))
+						.attr("text-anchor", "middle")  
+						.style("font-size", "180%") 
+						.text(charttitle);
+					// Initialize the X axis
+					var x = d3.scaleBand()
+					  .range([ 0, width ])
+					  .padding(0.2);
+					var xAxis = svg.append("g")
+					  .attr("transform", "translate(0," + height + ")")
+					// Initialize the Y axis
+					var y = d3.scaleLinear()
+					  .range([ height, 0]);
+					var yAxis = svg.append("g")
+					  .attr("class", "myYaxis")
+				  	x.domain(data.map(function(d) { return d.group; }))
+				  	xAxis.call(d3.axisBottom(x))
+				  		.selectAll("text") 
+				        .style("text-anchor", "end")
+				        .attr("dx", "-.8em")
+				        .attr("dy", ".15em")
+				        .attr("transform", "rotate(-30)")
+				        .call(wrap, x.bandwidth()); 
+				  	// Update the Y axis
+				  	y.domain([0, d3.max(data, function(d) { return d.value }) ]);
+				  	yAxis.transition().duration(1000).call(d3.axisLeft(y));
+				  	// Create the u variable
+				  	var u = svg.selectAll("rect")
+					    .data(data)
+				  		u
+					    .enter()
+				    	.append("rect") // Add a new rect for each new elements
+				    	.merge(u) // get the already existing elements as well
+				    	.transition() // and apply changes to all of them
+				    	.duration(1000)
+				      	.attr("x", function(d) { return x(d.group); })
+				      	.attr("y", function(d) { return y(d.value); })
+				      	.attr("width", x.bandwidth())
+				      	.attr("height", function(d) { return height - y(d.value); })
+				      	.attr("fill", "#69b3a2")
+				      	
+				  		// If less group in the new dataset, I delete the ones not in use anymore
+				  		u
+					    .exit()
+				    	.remove()
+				    svg.selectAll(".text")        
+					  	.data(data)
+					  	.enter()
+					  	.append("text")
+					  	.attr("text-anchor", "middle")  
+					  	.attr("class","label")
+					  	.attr("x", (function(d) { return x(d.group)+50; }  ))
+					  	.attr("y", function(d) { return y(d.value)-30; })
+					  	.attr("dy", "1.75em")
+					  	.text(function(d) { return d.value; }); 
+				};
+				function processchart422dd(language,mydata){
+					d3.select("#processing422dd").selectAll("svg").remove();
+					var data1 = [
+					   {group: "600.000-1.000.000 €", value: 10},
+					   {group: "1.000.000-2.000.000 €", value: 45},
+					   {group: "2.000.000-3.000.000 €", value: 45}
+					];
+					if (language=='el-GR'){
+						var data2 = [
+						   {group: "Επεξεργασία καπνού", value: 0},
+						   {group: "Ζυθοποιία", value: 6.25},
+						   {group: "Προϊόντα κυψέλης", value: 0},
+						   {group: "Αιθέρια έλαια", value: 7.8},
+						   {group: "Πυρηνελαιουργεία", value: 24.19},
+						   {group: "Αποστάγματα", value: 7.31},
+						   {group: "Κοσμετολογία - διατροφή", value: 43.98},
+						   {group: "Θρέψη φυτών", value: 2.66},
+						   {group: "Πυτιά και συμπυκνώματα αυτής", value: 0},
+						   {group: "Παραπροϊόντα και υπολλείμματα βιομηχανιών ειδών διατροφής", value: 3.11},
+						   {group: "Επεξεργασία βάμβακος και λοιπών κλωστικών ινών", value: 12.51}
+						];
+						var data3 = [
+						   {group: "Ίδρυση", value: 45.03},
+						   {group: "Εκσυγχρονισμός", value: 68.44},
+						   {group: "Μετεγκατάσταση", value: 7.69},
+						   {group: "Συγχώνευση", value: 0}
+						];
+						var data4 = [
+						   {group: "Πολύ μικρή", value: 16.67},
+						   {group: "Μικρή", value: 33.33},
+						   {group: "Μεσαία", value: 50}
+						];
+						var data5 = [
+						   {group: "ΑΕ", value: 66.67},
+						   {group: "ΟΕ", value: 11.11},
+						   {group: "ΙΚΕ", value: 11.11},
+						   {group: "ΕΠΕ", value: 5.56},
+						   {group: "Αγροτικός Συνεταιρισμός", value: 5.56}
+						];
+						var charttitles = ["Ύψος Επένδυσης","Τομέας","Είδος Επένδυσης","Μέγεθος Επιχείρησης","Νομική Μορφή"];
+					} else {
+						var data2 = [
+						   {group: "Tobacco", value: 0},
+						   {group: "Beer", value: 6.25},
+						   {group: "Beehive products", value: 0},
+						   {group: "Essences", value: 7.8},
+						   {group: "Core oil press", value: 24.19},
+						   {group: "Distilleries", value: 7.31},
+						   {group: "Cosmetology - nutrition", value: 43.98},
+						   {group: "Plant nutrition", value: 2.66},
+						   {group: "Rennet and concentrates thereof", value: 0},
+						   {group: "By-products and residues from the food industries", value: 3.11},
+						   {group: "Cotton and other textile fibers", value: 12.51}
+						];
+						var data3 = [
+						   {group: "Establishment", value: 45.03},
+						   {group: "Modernization", value: 68.44},
+						   {group: "Relocation", value: 7.69},
+						   {group: "Merger", value: 0}
+						];
+						var data4 = [
+						   {group: "Very small", value: 16.67},
+						   {group: "Small", value: 33.33},
+						   {group: "Medium", value: 50}
+						];
+						var data5 = [
+						   {group: "S.A.", value: 66.67},
+						   {group: "General partnership", value: 11.11},
+						   {group: "Private Company", value: 11.11},
+						   {group: "Ltd", value: 5.56},
+						   {group: "Cooperative", value: 5.56}
+						];
+						var charttitles = ["Budget","Sector","Investment Type","Beneficiary size","Legal Entity"];
+					}
+					charttitle=charttitles[0];
+					switch(mydata) {
+					  	case "data1":
+					  		data=data1;
+					  		charttitle=charttitles[0]+" - 4.2.2 (>600.000 €)";					    	
+					  		break;
+					  	case "data2":
+					  		data=data2;
+					  		charttitle=charttitles[1]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					    case "data3":
+					    	data=data3;
+					    	charttitle=charttitles[2]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					  	case "data4":
+					  		data=data4;
+					  		charttitle=charttitles[3]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					    case "data5":
+					    	data=data5;
+					    	charttitle=charttitles[4]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					  	case "data6":
+					  		data=data6;
+					  		charttitle=charttitles[5]+" - 4.2.2 (>600.000 €)";
+					    	break;
+					  	default:
+					};
+					// set the dimensions and margins of the graph
+					var margin = {top: 80, right: 30, bottom: 70, left: 60},
+					    width = 1000 - margin.left - margin.right,
+					    height = 300 - margin.top - margin.bottom;
+					// append the svg object to the body of the page
+					var svg = d3.select("#processing422dd")
+					  .append("svg")
+					    .attr("width", width + margin.left + margin.right)
+					    .attr("height", height + margin.top + margin.bottom)
+					  .append("g")
+					    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+					svg.append("text")
+						.attr("x", (width / 2))             
+						.attr("y", 0 - (margin.top / 2))
+						.attr("text-anchor", "middle")  
+						.style("font-size", "180%") 
+						.text(charttitle);
+					// Initialize the X axis
+					var x = d3.scaleBand()
+					  .range([ 0, width ])
+					  .padding(0.2);
+					var xAxis = svg.append("g")
+					  .attr("transform", "translate(0," + height + ")")
+					// Initialize the Y axis
+					var y = d3.scaleLinear()
+					  .range([ height, 0]);
+					var yAxis = svg.append("g")
+					  .attr("class", "myYaxis")
+				  	x.domain(data.map(function(d) { return d.group; }))
+				  	xAxis.call(d3.axisBottom(x))
+				  		.selectAll("text") 
+				        .style("text-anchor", "end")
+				        .attr("dx", "-.8em")
+				        .attr("dy", ".15em")
+				        .attr("transform", "rotate(-30)")
+				        .call(wrap, x.bandwidth()); 
+				  	// Update the Y axis
+				  	y.domain([0, d3.max(data, function(d) { return d.value }) ]);
+				  	yAxis.transition().duration(1000).call(d3.axisLeft(y));
+				  	// Create the u variable
+				  	var u = svg.selectAll("rect")
+					    .data(data)
+				  		u
+					    .enter()
+				    	.append("rect") // Add a new rect for each new elements
+				    	.merge(u) // get the already existing elements as well
+				    	.transition() // and apply changes to all of them
+				    	.duration(1000)
+				      	.attr("x", function(d) { return x(d.group); })
+				      	.attr("y", function(d) { return y(d.value); })
+				      	.attr("width", x.bandwidth())
+				      	.attr("height", function(d) { return height - y(d.value); })
+				      	.attr("fill", "#69b3a2")
+				      	
+				  		// If less group in the new dataset, I delete the ones not in use anymore
+				  		u
+					    .exit()
+				    	.remove()
+				    svg.selectAll(".text")        
+					  	.data(data)
+					  	.enter()
+					  	.append("text")
+					  	.attr("text-anchor", "middle")  
+					  	.attr("class","label")
+					  	.attr("x", (function(d) { return x(d.group)+50; }  ))
+					  	.attr("y", function(d) { return y(d.value)-30; })
+					  	.attr("dy", "1.75em")
+					  	.text(function(d) { return d.value; }); 
+				};
+			</script>
+		</div>
+    </div>
+    <!-- /.container-fluid-->
+    <!-- /.content-wrapper-->
+    <footer class="sticky-footer">
+		<div class="container">
+			<div class="row no-gutters">
+				<div class="col-md-3 col-lg-3 d-none d-md-block">
+					<div class="row no-gutters">
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/egtaa.jpg" alt="ΕΓΤΑΑ" width="50%" height="5%"></a>
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/paa.jpg" alt="ΠΑΑ" width="30%" height="5%"></a>
+					</div>
+				</div>
+				<div class="col-md-5 col-lg-5 col-12 col-sm-12">
+					<p class="text-center" id="footer"></p>
+				</div>
+				<div class="col-md-3 col-lg-3 d-none d-md-block">
+					<div class="row no-gutters">
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/ypaat.jpg" alt="ΥΠΑΑΤ" width="50%" height="5%"></a>
+						<a class="d-inline-block col-md-5"><img class="img-fluid" src="images/espa.jpg" alt="ΕΣΠΑ" width="50%" height="5%"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+    <a class="scroll-to-top rounded" href="#page-top"><i class="fa fa-angle-up"></i></a>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin.min.js"></script>
+  </div>
+</body>
+
+</html>
